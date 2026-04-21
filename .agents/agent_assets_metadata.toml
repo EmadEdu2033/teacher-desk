@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "3YL-T8Amyn8liy3AKWzmg"
+uri = "file://downloads/TeacherDesk.zip"
+type = "unspecified"
+title = "TeacherDesk.zip — Full source code (download & unzip)"
