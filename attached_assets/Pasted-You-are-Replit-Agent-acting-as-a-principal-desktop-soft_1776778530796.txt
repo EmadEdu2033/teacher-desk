@@ -1,0 +1,310 @@
+You are Replit Agent acting as a principal desktop software architect, senior Python engineer, UX designer, and release engineer.
+
+FIRST ACTION
+Read every attached file and every project/workspace file available to you, extract all requirements, constraints, product directions, UI preferences, technical instructions, and non-functional expectations, and treat them as authoritative inputs for this build. Merge those instructions with the requirements below into one coherent implementation plan. If there is any conflict, prioritize the combination that best preserves these hard rules: fully offline operation, no login, no cloud, local-only storage, Windows-first portable delivery, Arabic + English support, low-resource performance, and a polished real-world desktop UX.
+
+DO NOT ASK ME TO CHOOSE BETWEEN OPTIONS.
+Make the best engineering decisions yourself and build the strongest practical solution.
+
+PRODUCT TO BUILD
+Build a real, usable, production-minded Windows desktop application for online teachers that combines:
+1. a professional sticky-notes workspace with freely movable notes on a virtual wall inside the app
+2. a professional to-do/task manager
+3. persistent local memory so the app remembers everything automatically between sessions
+
+This is not a concept, mockup, or placeholder. Build an actual working MVP with clean architecture, polished UI, and packaging for Windows.
+
+MANDATORY TECHNICAL DIRECTION
+Use this stack unless an attached file explicitly forces a safer equivalent:
+- Python 3.11
+- CustomTkinter for the main polished UI
+- Tkinter Canvas for the sticky-notes wall and free dragging behavior
+- SQLite for local persistent storage
+- PyInstaller for Windows packaging
+
+Favor fast startup, low RAM usage, and reliability over flashy complexity. Do not build a web app. Do not depend on a browser. Do not require a server. Do not require internet. Do not require sign-in or sign-up. Do not use external APIs for core functionality.
+
+PRIMARY GOAL
+Create a lightweight, portable Windows app that opens fast, works on low-spec devices, and can be launched directly via an .exe without requiring the user to create an account or stay online. The app should feel like a clean digital desk for teachers who work online and need to capture reminders, lesson notes, student notes, and daily tasks quickly.
+
+HARD CONSTRAINTS
+- Fully offline
+- No login
+- No sign-up
+- No internet dependency
+- No cloud sync
+- No telemetry
+- No tracking
+- No ads
+- No admin rights required to run
+- Windows-first deliverable
+- Packaged with an .exe launcher
+- Prefer portable distribution with an app.exe that runs directly after unzip
+- Optimized for weak Windows devices
+- All data stored locally on the device
+- Autosave everything
+- Arabic and English supported properly
+- Real RTL support for Arabic
+- Clean modern UI
+- Must be actually usable, not demo-only
+
+CORE USER
+Online teachers who need:
+- sticky reminders
+- lesson planning notes
+- student-specific notes
+- task tracking
+- daily planning
+- quick capture with zero friction
+- a dependable local desktop productivity tool
+
+APP STRUCTURE
+Build the app with a professional layout:
+- Left sidebar navigation:
+  - Wall
+  - Tasks
+  - Archive
+  - Settings
+- Top toolbar:
+  - New Note
+  - New Task
+  - Search
+  - Language toggle
+  - Theme toggle
+- Main content area switches between views
+
+FEATURE SET
+
+1) STICKY NOTES WALL
+Create a spacious virtual wall/canvas inside the app where notes can be placed freely, like real sticky notes on a board.
+Required behavior:
+- Create note instantly
+- Drag note freely anywhere on the wall
+- Save note position automatically
+- Reopen app and restore the exact note positions
+- Edit note title and body
+- Resize notes
+- Change note color
+- Pin important notes
+- Duplicate notes
+- Archive notes
+- Delete notes
+- Search notes
+- Optional tags
+- Correct z-order handling when a note is selected
+- Smooth drag-and-drop experience
+- Professional sticky-note look:
+  - rounded corners
+  - subtle shadow
+  - readable typography
+  - realistic but modern feel
+- Support overlapping notes without breaking usability
+- Support many notes without major slowdown
+- Support mixed Arabic and English text inside the same note
+- Support multi-line notes
+- Autosave on content change and on drag end
+
+Use a canvas implementation that feels freeform, not grid-locked. A light optional snap behavior is acceptable only if free movement remains available. The wall should feel like a real workspace, not a basic list of cards.
+
+2) PROFESSIONAL TASK / TO-DO SYSTEM
+Create a proper task manager for teachers.
+Each task should support:
+- title
+- description
+- priority
+- due date
+- status
+- category
+- tags
+- completion state
+- optional subtasks
+- optional linked note
+Views and behavior:
+- Quick add task
+- Full task editor
+- Filters for:
+  - Today
+  - Upcoming
+  - Overdue
+  - Completed
+  - High Priority
+  - By Category
+- Sorting by:
+  - due date
+  - priority
+  - created date
+- Clear visual status
+- Mark complete
+- Archive completed or old tasks if desired
+- Search tasks
+- Professional visual style, not childish
+
+Preload sensible default categories useful for teachers, such as:
+- Lessons
+- Students
+- Meetings
+- Admin
+- Personal
+
+3) LOCAL MEMORY / PERSISTENCE
+The app must remember everything locally and automatically:
+- notes
+- note positions
+- note sizes
+- note colors
+- pin states
+- archive states
+- tasks
+- categories
+- tags
+- settings
+- selected language
+- selected theme
+- last open view
+- layout preferences
+
+Use SQLite as the main storage layer. Keep schema clean and maintainable. Handle migrations safely. Make storage Unicode-safe.
+
+4) BILINGUAL UI: ENGLISH + ARABIC
+This is mandatory.
+Requirements:
+- Full UI localization for English and Arabic
+- In-app language switch in Settings and optionally in the toolbar
+- Arabic labels, buttons, menus, dialogs, and empty states
+- English labels, buttons, menus, dialogs, and empty states
+- Real RTL behavior in Arabic mode where appropriate
+- Correct text alignment based on language
+- Proper handling of Arabic input, punctuation, and mixed Arabic-English content
+- Use fonts and spacing that render Arabic clearly on Windows
+- Persist the chosen language between sessions
+
+5) THEMES AND VISUAL POLISH
+Support:
+- Light mode
+- Dark mode
+Requirements:
+- Good contrast in both modes
+- Sticky notes remain attractive and readable in both modes
+- Theme setting persists between sessions
+- The UI should feel polished, calm, professional, and productivity-focused
+
+6) PERFORMANCE AND LOW-SPEC OPTIMIZATION
+This app must feel light.
+Requirements:
+- Fast startup
+- Low memory usage
+- Low idle CPU usage
+- No unnecessary background work
+- Efficient rendering of the notes wall
+- Efficient database access
+- Keep dependencies minimal and safe
+- Avoid heavy animations
+- Avoid bloated frameworks
+- Make practical engineering choices for weak Windows machines
+
+7) BACKUP / IMPORT / EXPORT
+Implement simple local data safety features:
+- Export user data to a local backup file
+- Import backup file
+- Reset local data with confirmation
+- Keep everything fully offline
+- Make backup format straightforward and maintainable
+
+PORTABLE APP BEHAVIOR
+The app should behave intelligently in portable mode:
+- Prefer storing data beside the executable in a local writable data folder if possible
+- If the executable location is not writable, fall back safely to a user-local app data directory
+- Never require admin rights
+- Preserve a clean structure for portability
+
+ARCHITECTURE REQUIREMENTS
+Organize the project cleanly and professionally. Use modular files and clear naming. At minimum structure around:
+- app entrypoint
+- UI shell / layout
+- sticky wall canvas components
+- note widgets / note editor
+- task manager UI
+- storage layer
+- data models
+- settings manager
+- localization / i18n
+- theme manager
+- backup/import/export utilities
+- packaging files
+
+Use maintainable code. Add comments only where useful. Avoid messy monolithic files.
+
+DESIGN QUALITY BAR
+The sticky notes must feel close to real sticky notes, but upgraded into a modern desktop tool:
+- elegant note colors such as yellow, pink, blue, green, orange
+- soft shadow
+- rounded corners
+- strong readability
+- pleasant spacing
+- tactile visual feel without being heavy
+The task manager must look professional, compact, and efficient.
+
+IMPORTANT PRODUCT DETAILS
+- The app should open directly into the last-used section, or default to the Wall
+- Users should be able to create a note with one click
+- Users should be able to create a task with one click
+- Search should feel immediate
+- Autosave should be silent and reliable
+- Dialogs should be minimal
+- Destructive actions should ask for confirmation only when necessary
+- The workflow should be fast enough for daily teaching use
+
+IMPLEMENTATION PRIORITY
+Build in this practical order:
+1. App shell and navigation
+2. Local database and models
+3. Sticky notes wall with drag, edit, resize, color, persistence
+4. Task manager with CRUD, filters, and persistence
+5. Localization for English and Arabic
+6. Theme system
+7. Archive and backup/import/export
+8. Final polish and packaging
+
+ACCEPTANCE CRITERIA
+The app is only acceptable if all of the following work:
+- I can launch the desktop app locally
+- I can create a sticky note instantly
+- I can drag the note anywhere on the wall
+- I can close the app and reopen it and the note stays in the same place
+- I can write Arabic and English in notes without layout issues
+- I can switch the UI language between Arabic and English
+- Arabic mode shows correct RTL behavior where appropriate
+- I can create tasks with due dates and priorities
+- I can filter tasks by status and date
+- Data persists automatically without manual save
+- The app runs fully offline
+- There is no login or cloud dependency
+- A Windows packaging path exists and produces an .exe launcher
+
+OUTPUT REQUIREMENTS
+Do the work in this order and do not stop at high-level advice:
+1. Briefly summarize the extracted requirements from the attached/workspace files and how they were merged into the final build direction
+2. State the final architecture and folder structure you will create
+3. Create the full source code files
+4. Create localization resources for English and Arabic
+5. Create the SQLite schema and storage layer
+6. Create README.md with clear run/build instructions
+7. Create requirements.txt
+8. Create a PyInstaller spec file and Windows build script
+9. Explain how to generate the portable Windows .exe
+10. If Windows compilation cannot be executed in the current environment, still provide everything needed to build it immediately on a Windows machine
+
+CODING RULES
+- No pseudo-code
+- No fake placeholders unless clearly marked temporary and immediately replaced with working logic
+- No unfinished stubs for core features
+- No unnecessary dependencies
+- No server code
+- No web frontend
+- No account system
+- No analytics
+- No hidden online dependency
+- Build real working functionality
+
+FINAL EXECUTION INSTRUCTION
+Do not only describe the app. Actually generate the project structure and code for a real, polished MVP desktop application that meets the above requirements and the attached-file instructions. Make sensible decisions independently, keep it lightweight, and optimize for a portable Windows .exe experience with excellent Arabic/English support and a professional sticky-notes wall.
