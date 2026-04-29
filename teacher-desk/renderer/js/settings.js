@@ -49,7 +49,7 @@ export async function initSettings() {
     if (r && r.ok) showToast(t('toast.exported')); else if (r && r.error) showToast(t('toast.error'));
   });
   document.getElementById('importBtn').addEventListener('click', async () => {
-    if (!confirm('Importing will replace your current data. Continue?')) return;
+    if (!confirm(t('settings.confirmImport'))) return;
     const r = await storage.backup.import();
     if (r && r.ok) { showToast(t('toast.imported')); setTimeout(() => location.reload(), 800); }
     else if (r && r.error) showToast(t('toast.error'));

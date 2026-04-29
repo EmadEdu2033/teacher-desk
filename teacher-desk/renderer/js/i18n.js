@@ -74,6 +74,7 @@ const dict = {
     "toast.error": "Something went wrong.",
     "toast.podiumOn": "Podium mode ON — hidden from screen capture.",
     "toast.podiumOff": "Podium mode OFF — visible to screen capture.",
+    "settings.confirmImport": "Importing will replace your current data. Continue?",
   },
   ar: {
     appName: "مكتب المعلم",
@@ -148,6 +149,7 @@ const dict = {
     "toast.error": "حدث خطأ ما.",
     "toast.podiumOn": "وضع المنصة مفعّل — مخفي عن تسجيل الشاشة.",
     "toast.podiumOff": "وضع المنصة مغلق — ظاهر في تسجيل الشاشة.",
+    "settings.confirmImport": "سيؤدي الاستيراد إلى استبدال بياناتك الحالية. هل تريد المتابعة؟",
   },
 };
 

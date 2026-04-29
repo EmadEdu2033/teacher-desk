@@ -6,3 +6,9 @@ id = "TD-WIN-NSIS-INSTALLER"
 uri = "file://downloads/TeacherDeskSetup.exe"
 type = "unspecified"
 title = "Teacher Desk for Windows — Installer (TeacherDeskSetup.exe)"
+
+[[outputs]]
+id = "TD-WIN-READMEFIRST"
+uri = "file://downloads/READ-ME-FIRST.txt"
+type = "text"
+title = "READ-ME-FIRST.txt — How to install Teacher Desk on Windows"
