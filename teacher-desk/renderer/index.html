@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; font-src 'self' data:;" />
+  <title>Teacher Desk</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <span class="logo-mark">📌</span>
+        <span class="logo-text" data-i18n="appName">Teacher Desk</span>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-view="notes" data-i18n="tab.notes">Sticky Notes</button>
+        <button class="tab" data-view="tasks" data-i18n="tab.tasks">Tasks</button>
+        <button class="tab" data-view="settings" data-i18n="tab.settings">Settings</button>
+      </nav>
+    </div>
+    <div class="topbar-right">
+      <button id="podiumToggle" class="podium-toggle" title="Podium mode">
+        <span class="podium-icon" aria-hidden="true">👁</span>
+        <span class="podium-label" data-i18n="podium.off">Podium: Off</span>
+      </button>
+      <button id="quickAddNote" class="primary-btn" data-i18n="notes.new">+ New Note</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <!-- Notes wall -->
+    <section id="view-notes" class="view active">
+      <div id="wall" class="wall">
+        <div id="wallSurface" class="wall-surface"></div>
+      </div>
+      <div class="wall-controls">
+        <button id="wallFit" class="ghost-btn" title="Fit to view" data-i18n="wall.fit">Fit</button>
+        <button id="wallReset" class="ghost-btn" title="Reset view" data-i18n="wall.reset">Reset</button>
+        <span id="wallStatus" class="wall-status"></span>
+      </div>
+
+      <!-- Color picker dialog -->
+      <div id="colorPicker" class="popover hidden">
+        <div class="popover-title" data-i18n="notes.pickColor">Pick a color for your new note</div>
+        <div class="color-grid">
+          <button class="swatch" data-color="yellow" style="background:#ffe680" title="Yellow"></button>
+          <button class="swatch" data-color="pink"   style="background:#ffb3c7" title="Pink"></button>
+          <button class="swatch" data-color="green"  style="background:#b6e2c5" title="Green"></button>
+          <button class="swatch" data-color="blue"   style="background:#a8d3ff" title="Blue"></button>
+          <button class="swatch" data-color="purple" style="background:#cdb4ff" title="Purple"></button>
+          <button class="swatch" data-color="orange" style="background:#ffc89a" title="Orange"></button>
+          <button class="swatch" data-color="white"  style="background:#ffffff;border:1px solid #ddd" title="White"></button>
+          <button class="swatch" data-color="dark"   style="background:#3b3b46" title="Dark"></button>
+        </div>
+      </div>
+
+      <!-- Note context menu -->
+      <div id="noteMenu" class="menu hidden">
+        <button data-action="bringFront" data-i18n="notes.bringFront">Bring to front</button>
+        <button data-action="duplicate"  data-i18n="notes.duplicate">Duplicate</button>
+        <div class="menu-section" data-i18n="notes.changeColor">Change color</div>
+        <div class="menu-colors">
+          <button class="swatch sm" data-color="yellow" style="background:#ffe680"></button>
+          <button class="swatch sm" data-color="pink"   style="background:#ffb3c7"></button>
+          <button class="swatch sm" data-color="green"  style="background:#b6e2c5"></button>
+          <button class="swatch sm" data-color="blue"   style="background:#a8d3ff"></button>
+          <button class="swatch sm" data-color="purple" style="background:#cdb4ff"></button>
+          <button class="swatch sm" data-color="orange" style="background:#ffc89a"></button>
+          <button class="swatch sm" data-color="white"  style="background:#ffffff;border:1px solid #ddd"></button>
+          <button class="swatch sm" data-color="dark"   style="background:#3b3b46"></button>
+        </div>
+        <button data-action="delete" class="danger" data-i18n="notes.delete">Delete</button>
+      </div>
+    </section>
+
+    <!-- Tasks view -->
+    <section id="view-tasks" class="view">
+      <div class="tasks-toolbar">
+        <input id="taskSearch" type="search" placeholder="Search tasks..." data-i18n-attr="placeholder:tasks.search" />
+        <select id="taskFilterPriority">
+          <option value="" data-i18n="tasks.allPriorities">All priorities</option>
+          <option value="urgent" data-i18n="tasks.urgent">Urgent</option>
+          <option value="high"   data-i18n="tasks.high">High</option>
+          <option value="normal" data-i18n="tasks.normal">Normal</option>
+          <option value="low"    data-i18n="tasks.low">Low</option>
+        </select>
+        <button id="newTaskBtn" class="primary-btn" data-i18n="tasks.new">+ New Task</button>
+      </div>
+
+      <div id="taskGroups" class="task-groups"></div>
+    </section>
+
+    <!-- Settings -->
+    <section id="view-settings" class="view">
+      <div class="settings-wrap">
+        <h2 data-i18n="settings.title">Settings</h2>
+
+        <div class="setting-row">
+          <label data-i18n="settings.language">Language</label>
+          <select id="settingLanguage">
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <label data-i18n="settings.theme">Theme</label>
+          <select id="settingTheme">
+            <option value="light"  data-i18n="settings.themeLight">Light</option>
+            <option value="dark"   data-i18n="settings.themeDark">Dark</option>
+            <option value="system" data-i18n="settings.themeSystem">System</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <label data-i18n="settings.podium">Podium mode (hide from screen capture)</label>
+          <label class="switch">
+            <input type="checkbox" id="settingPodium" />
+            <span class="slider"></span>
+          </label>
+          <p class="help" data-i18n="settings.podiumHelp">When ON, Zoom / Google Meet / OBS show a black box where Teacher Desk is. You still see it normally.</p>
+        </div>
+
+        <div class="setting-row">
+          <label data-i18n="settings.sound">Reminder sound</label>
+          <label class="switch">
+            <input type="checkbox" id="settingSound" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <h3 data-i18n="settings.data">Your Data</h3>
+        <div class="setting-row buttons">
+          <button id="exportBtn" class="ghost-btn"   data-i18n="settings.export">Export backup…</button>
+          <button id="importBtn" class="ghost-btn"   data-i18n="settings.import">Import backup…</button>
+          <button id="dataFolderBtn" class="ghost-btn" data-i18n="settings.openFolder">Open data folder</button>
+        </div>
+        <p class="help" data-i18n="settings.dataHelp">All your notes &amp; tasks are stored only on this computer.</p>
+
+        <h3 data-i18n="settings.about">About</h3>
+        <p class="muted">Teacher Desk v1.0 — offline productivity for online teachers.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Task editor modal -->
+  <div id="taskModal" class="modal hidden">
+    <div class="modal-card">
+      <h3 id="taskModalTitle" data-i18n="tasks.new">New Task</h3>
+      <div class="form-row">
+        <label data-i18n="tasks.title">Title</label>
+        <input id="taskTitle" type="text" />
+      </div>
+      <div class="form-row">
+        <label data-i18n="tasks.description">Description</label>
+        <textarea id="taskDesc" rows="2"></textarea>
+      </div>
+      <div class="form-row two">
+        <div>
+          <label data-i18n="tasks.priority">Priority</label>
+          <select id="taskPriority">
+            <option value="low"    data-i18n="tasks.low">Low</option>
+            <option value="normal" selected data-i18n="tasks.normal">Normal</option>
+            <option value="high"   data-i18n="tasks.high">High</option>
+            <option value="urgent" data-i18n="tasks.urgent">Urgent</option>
+          </select>
+        </div>
+        <div>
+          <label data-i18n="tasks.category">Category</label>
+          <input id="taskCategory" type="text" placeholder="e.g. Lesson prep" />
+        </div>
+      </div>
+      <div class="form-row two">
+        <div>
+          <label data-i18n="tasks.dueDate">Due date</label>
+          <input id="taskDueDate" type="date" />
+        </div>
+        <div>
+          <label data-i18n="tasks.dueTime">Due time</label>
+          <input id="taskDueTime" type="time" />
+        </div>
+      </div>
+      <div class="form-row">
+        <label data-i18n="tasks.subtasks">Sub-tasks</label>
+        <div id="subtaskList" class="subtask-list"></div>
+        <button id="addSubtask" class="ghost-btn small" data-i18n="tasks.addSubtask">+ Add sub-task</button>
+      </div>
+      <div class="modal-actions">
+        <button id="taskCancel" class="ghost-btn" data-i18n="common.cancel">Cancel</button>
+        <button id="taskSave" class="primary-btn" data-i18n="common.save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Reminder sound (data URL set in JS) -->
+  <audio id="reminderSound" preload="auto"></audio>
+
+  <script type="module" src="./js/i18n.js"></script>
+  <script type="module" src="./js/storage.js"></script>
+  <script type="module" src="./js/notes.js"></script>
+  <script type="module" src="./js/tasks.js"></script>
+  <script type="module" src="./js/settings.js"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

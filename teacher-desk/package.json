@@ -1,0 +1,64 @@
+{
+  "name": "teacher-desk",
+  "version": "1.0.0",
+  "description": "Offline desktop productivity app for online teachers — sticky notes, tasks, and a private podium hidden from screen sharing.",
+  "main": "main.js",
+  "author": "Teacher Desk",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "preview": "node scripts/preview-server.js",
+    "build:win": "electron-builder --win --x64 --publish never",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.5.0"
+  },
+  "devDependencies": {
+    "electron": "33.2.0",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.teacherdesk.app",
+    "productName": "Teacher Desk",
+    "copyright": "Copyright © 2026 Teacher Desk",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*",
+      "package.json",
+      "!**/*.map",
+      "!**/.DS_Store"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/better-sqlite3/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "TeacherDesk-Windows.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Teacher Desk",
+      "uninstallDisplayName": "Teacher Desk",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

@@ -1,118 +1,42 @@
 # Teacher Desk
 
-A lightweight, fully offline Windows desktop productivity app for online teachers.
+Offline desktop productivity app for online teachers.
 
-## Features
+- Sticky notes wall (drag, resize, color picker, auto-save)
+- Task manager with priorities, due dates, sub-tasks, in-app reminders
+- Bilingual EN / AR with full RTL
+- Light / Dark themes
+- Podium mode — hidden from screen capture (Zoom, Google Meet, OBS)
+- Local-only SQLite, backup / restore, system tray
 
-- **Sticky Notes Wall** — drag and place notes freely, resize, color-code, pin, archive
-- **Task Manager** — priorities, due dates, categories, subtasks, filters
-- **Bilingual** — full English and Arabic support with RTL layout
-- **Light & Dark themes**
-- **Auto-save** — everything persists automatically via SQLite
-- **Backup / Import / Export** — local data safety
-- **No login, no internet, no cloud**
+## For end users (Windows)
 
-## Requirements
+1. Download `TeacherDesk-Windows.zip`.
+2. Right-click the zip → **Extract All…** to a folder of your choice (Desktop is fine).
+3. Open the extracted folder and double-click **`Teacher Desk.exe`**.
+4. To start the app every day, just double-click the same `Teacher Desk.exe`. You can right-click it and choose *Pin to taskbar* or *Send to → Desktop (create shortcut)* for one-click access.
 
-- **Python 3.11+**
-- Standard library only (`tkinter`, `sqlite3` are built-in)
-- No third-party runtime dependencies
+No Python, no Node, no installer wizard — extract and run.
 
-## Running Directly
-
-```batch
-# Windows
-run.bat
-
-# Or directly
-python src/main.py
-```
-
-## Building the Windows .exe
-
-### Prerequisites
-- Python 3.11+ on Windows with `pip`
-- Run:
-
-```batch
-build_windows.bat
-```
-
-The portable `.exe` will appear in `release\TeacherDesk.exe`.
-
-### Manual Build
-
-```batch
-pip install pyinstaller
-pyinstaller teacher_desk.spec --clean --noconfirm
-```
-
-Output: `dist\TeacherDesk.exe`
-
-## Portable Distribution
-
-Copy `TeacherDesk.exe` anywhere. On first launch, a `TeacherDeskData\` folder
-is created next to the `.exe` holding the SQLite database. If that location is
-read-only (e.g. Program Files), it falls back to:
-`%LOCALAPPDATA%\TeacherDesk\`
-
-## Data Location
-
-| Scenario | Data Location |
-|---|---|
-| Portable (exe in writable folder) | `TeacherDeskData\` beside the exe |
-| Read-only install location | `%LOCALAPPDATA%\TeacherDesk\` |
-| Development (running with Python) | `data\` beside the project root |
-
-## Project Structure
+## Run locally (developer)
 
 ```
-teacher-desk/
-├── src/
-│   ├── main.py              # App entry point
-│   ├── ui/
-│   │   ├── sidebar.py       # Navigation sidebar
-│   │   ├── toolbar.py       # Top toolbar
-│   │   ├── wall_canvas.py   # Sticky notes wall
-│   │   ├── note_editor.py   # Note create/edit dialog
-│   │   ├── task_view.py     # Task manager view
-│   │   ├── archive_view.py  # Archive view
-│   │   └── settings_view.py # Settings view
-│   ├── storage/
-│   │   ├── database.py      # SQLite init, backup, reset
-│   │   ├── notes_repo.py    # Note CRUD operations
-│   │   └── tasks_repo.py    # Task CRUD operations
-│   ├── i18n/
-│   │   └── translations.py  # English + Arabic strings
-│   └── utils/
-│       └── theme.py         # Light/dark theme colors
-├── requirements.txt         # PyInstaller only
-├── teacher_desk.spec        # PyInstaller spec
-├── build_windows.bat        # One-click Windows build
-└── run.bat                  # Quick dev run
+npm install
+npm start
 ```
 
-## Keyboard Shortcuts
+## Build the Windows package
 
-| Shortcut | Action |
-|---|---|
-| `Ctrl+Enter` | Save note (in editor) |
-| `Escape` | Close dialog |
-| `Enter` | Add quick task |
-| `Double-click` note | Open note editor |
-| `Right-click` note | Context menu (pin, color, archive, delete) |
+```
+npm run build:win
+```
+Produces `dist/TeacherDesk-Windows.zip` (the unpacked `dist/win-unpacked/` directory zipped up).
 
-## Categories (default)
+> **Why a ZIP instead of an NSIS installer?** Building the NSIS installer wrapper requires `wine` (electron-builder runs `rcedit.exe` under wine to embed the icon and metadata into the installer stub). The Replit Linux sandbox blocks the syscalls wine needs, so we ship the unpacked app inside a ZIP instead. The end-user experience is the same — extract the folder and run `Teacher Desk.exe`. To produce a true NSIS installer, run `npm run build:win` on a Windows machine or a Linux box with wine.
 
-- Lessons
-- Students  
-- Meetings
-- Admin
-- Personal
+## Browser preview (no Electron)
 
-## Notes on Arabic Support
-
-- Language can be switched at any time in Settings or via the toolbar toggle
-- Arabic text input works in all text fields
-- RTL alignment is applied in Arabic mode
-- Mixed Arabic/English content in notes is handled correctly
+```
+PORT=5000 npm run preview
+```
+Storage falls back to `localStorage`; SQLite & native dialogs are stubbed out.

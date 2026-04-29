@@ -6,3 +6,9 @@ id = "3YL-T8Amyn8liy3AKWzmg"
 uri = "file://downloads/TeacherDesk.zip"
 type = "unspecified"
 title = "TeacherDesk.zip — Full source code (download & unzip)"
+
+[[outputs]]
+id = "DnV1NPekdTh4TBlfMY9QX"
+uri = "file://downloads/TeacherDesk-Windows.zip"
+type = "unspecified"
+title = "Teacher Desk for Windows (zip — extract & run)"

@@ -47,3 +47,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Build deliverables (presented via present_asset, not versioned)
+/downloads

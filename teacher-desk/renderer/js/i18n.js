@@ -1,0 +1,165 @@
+// English + Arabic translations for Teacher Desk
+
+const dict = {
+  en: {
+    appName: "Teacher Desk",
+    "tab.notes": "Sticky Notes",
+    "tab.tasks": "Tasks",
+    "tab.settings": "Settings",
+    "podium.off": "Podium: Off",
+    "podium.on":  "Podium: On",
+    "notes.new": "+ New Note",
+    "notes.pickColor": "Pick a color for your new note",
+    "notes.delete": "Delete",
+    "notes.duplicate": "Duplicate",
+    "notes.bringFront": "Bring to front",
+    "notes.changeColor": "Change color",
+    "notes.titlePlaceholder": "Note title",
+    "notes.bodyPlaceholder": "Write here…",
+    "wall.fit": "Fit",
+    "wall.reset": "Reset",
+    "wall.empty": "Click \"+ New Note\" to add your first note",
+    "tasks.new": "+ New Task",
+    "tasks.search": "Search tasks…",
+    "tasks.allPriorities": "All priorities",
+    "tasks.urgent": "Urgent",
+    "tasks.high": "High",
+    "tasks.normal": "Normal",
+    "tasks.low": "Low",
+    "tasks.title": "Title",
+    "tasks.description": "Description",
+    "tasks.priority": "Priority",
+    "tasks.category": "Category",
+    "tasks.dueDate": "Due date",
+    "tasks.dueTime": "Due time",
+    "tasks.subtasks": "Sub-tasks",
+    "tasks.addSubtask": "+ Add sub-task",
+    "tasks.today": "Today",
+    "tasks.upcoming": "Upcoming",
+    "tasks.overdue": "Overdue",
+    "tasks.noDate": "No date",
+    "tasks.completed": "Completed",
+    "tasks.empty": "No tasks yet — click \"+ New Task\".",
+    "tasks.dueLabel": "Due",
+    "tasks.reminderTitle": "Task due",
+    "common.cancel": "Cancel",
+    "common.save": "Save",
+    "common.edit": "Edit",
+    "common.delete": "Delete",
+    "settings.title": "Settings",
+    "settings.language": "Language",
+    "settings.theme": "Theme",
+    "settings.themeLight": "Light",
+    "settings.themeDark": "Dark",
+    "settings.themeSystem": "System",
+    "settings.podium": "Podium mode (hide from screen capture)",
+    "settings.podiumHelp": "When ON, Zoom / Google Meet / OBS show a black box where Teacher Desk is. You still see it normally.",
+    "settings.sound": "Reminder sound",
+    "settings.data": "Your Data",
+    "settings.export": "Export backup…",
+    "settings.import": "Import backup…",
+    "settings.openFolder": "Open data folder",
+    "settings.dataHelp": "All your notes & tasks are stored only on this computer.",
+    "settings.about": "About",
+    "toast.exported": "Backup saved.",
+    "toast.imported": "Backup restored.",
+    "toast.error": "Something went wrong.",
+    "toast.podiumOn": "Podium mode ON — hidden from screen capture.",
+    "toast.podiumOff": "Podium mode OFF — visible to screen capture.",
+  },
+  ar: {
+    appName: "مكتب المعلم",
+    "tab.notes": "ملاحظات لاصقة",
+    "tab.tasks": "المهام",
+    "tab.settings": "الإعدادات",
+    "podium.off": "وضع المنصة: مغلق",
+    "podium.on":  "وضع المنصة: مفعّل",
+    "notes.new": "+ ملاحظة جديدة",
+    "notes.pickColor": "اختر لون الملاحظة الجديدة",
+    "notes.delete": "حذف",
+    "notes.duplicate": "تكرار",
+    "notes.bringFront": "إحضار للأمام",
+    "notes.changeColor": "تغيير اللون",
+    "notes.titlePlaceholder": "عنوان الملاحظة",
+    "notes.bodyPlaceholder": "اكتب هنا…",
+    "wall.fit": "ملاءمة",
+    "wall.reset": "إعادة",
+    "wall.empty": "اضغط «+ ملاحظة جديدة» لإضافة أول ملاحظة",
+    "tasks.new": "+ مهمة جديدة",
+    "tasks.search": "ابحث في المهام…",
+    "tasks.allPriorities": "كل الأولويات",
+    "tasks.urgent": "عاجلة",
+    "tasks.high": "عالية",
+    "tasks.normal": "عادية",
+    "tasks.low": "منخفضة",
+    "tasks.title": "العنوان",
+    "tasks.description": "الوصف",
+    "tasks.priority": "الأولوية",
+    "tasks.category": "التصنيف",
+    "tasks.dueDate": "تاريخ الاستحقاق",
+    "tasks.dueTime": "وقت الاستحقاق",
+    "tasks.subtasks": "مهام فرعية",
+    "tasks.addSubtask": "+ إضافة مهمة فرعية",
+    "tasks.today": "اليوم",
+    "tasks.upcoming": "القادمة",
+    "tasks.overdue": "متأخرة",
+    "tasks.noDate": "بلا تاريخ",
+    "tasks.completed": "مكتملة",
+    "tasks.empty": "لا توجد مهام بعد — اضغط «+ مهمة جديدة».",
+    "tasks.dueLabel": "موعد",
+    "tasks.reminderTitle": "حان موعد المهمة",
+    "common.cancel": "إلغاء",
+    "common.save": "حفظ",
+    "common.edit": "تعديل",
+    "common.delete": "حذف",
+    "settings.title": "الإعدادات",
+    "settings.language": "اللغة",
+    "settings.theme": "المظهر",
+    "settings.themeLight": "فاتح",
+    "settings.themeDark": "داكن",
+    "settings.themeSystem": "النظام",
+    "settings.podium": "وضع المنصة (إخفاء من تسجيل الشاشة)",
+    "settings.podiumHelp": "عند التفعيل، تظهر Zoom / Google Meet / OBS مربعاً أسود مكان مكتب المعلم. أنت تراه طبيعياً.",
+    "settings.sound": "صوت التذكير",
+    "settings.data": "بياناتك",
+    "settings.export": "حفظ نسخة احتياطية…",
+    "settings.import": "استيراد نسخة احتياطية…",
+    "settings.openFolder": "فتح مجلد البيانات",
+    "settings.dataHelp": "كل ملاحظاتك ومهامك مخزنة على هذا الجهاز فقط.",
+    "settings.about": "عن البرنامج",
+    "toast.exported": "تم حفظ النسخة الاحتياطية.",
+    "toast.imported": "تم استرجاع النسخة الاحتياطية.",
+    "toast.error": "حدث خطأ ما.",
+    "toast.podiumOn": "وضع المنصة مفعّل — مخفي عن تسجيل الشاشة.",
+    "toast.podiumOff": "وضع المنصة مغلق — ظاهر في تسجيل الشاشة.",
+  },
+};
+
+let currentLang = 'en';
+
+export function setLang(lang) {
+  currentLang = (lang === 'ar') ? 'ar' : 'en';
+  document.documentElement.setAttribute('lang', currentLang);
+  document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+  applyDom();
+}
+
+export function t(key) {
+  return (dict[currentLang] && dict[currentLang][key]) || (dict.en[key]) || key;
+}
+
+export function getLang() { return currentLang; }
+
+export function applyDom() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    el.textContent = t(k);
+  });
+  document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+    const spec = el.getAttribute('data-i18n-attr');
+    spec.split(';').forEach(part => {
+      const [attr, key] = part.split(':');
+      if (attr && key) el.setAttribute(attr.trim(), t(key.trim()));
+    });
+  });
+}
