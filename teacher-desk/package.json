@@ -11,7 +11,10 @@
     "preview": "node scripts/preview-server.js",
     "build:unpacked": "electron-builder --win --x64 --publish never",
     "build:installer": "node scripts/make-installer.js",
-    "build:win": "npm run build:unpacked && npm run build:installer",
+    "sign:exe": "node scripts/sign.js dist/win-unpacked/Teacher\\ Desk.exe",
+    "sign:installer": "node scripts/sign.js dist/TeacherDeskSetup.exe",
+    "cert:dev": "node scripts/generate-self-signed-cert.js",
+    "build:win": "npm run build:unpacked && npm run sign:exe && npm run build:installer && npm run sign:installer",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
@@ -50,7 +53,11 @@
         }
       ],
       "artifactName": "TeacherDesk-Windows.${ext}",
-      "signAndEditExecutable": false
+      "signAndEditExecutable": false,
+      "publisherName": "Teacher Desk",
+      "certificateFile": "build/cert.pfx",
+      "certificatePassword": "${env.WIN_CSC_KEY_PASSWORD}",
+      "_signing_note": "This block is consumed by scripts/sign.js (Linux-friendly osslsigncode). electron-builder itself does not sign here because signAndEditExecutable=false (Wine crashes in the Replit sandbox). Set the actual password via the WIN_CSC_KEY_PASSWORD env var; never put the literal password in this file."
     },
     "nsis": {
       "oneClick": false,

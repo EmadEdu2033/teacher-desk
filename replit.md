@@ -65,6 +65,9 @@ The end-user downloads `TeacherDeskSetup.exe` (~76 MB) and double-clicks it. The
 
 > **How the installer is built in this sandbox.** `electron-builder`'s NSIS target on Linux invokes `rcedit.exe` through Wine to embed the icon and version metadata into the installer stub. Wine crashes with "Bad system call" inside the Replit sandbox. We work around it by splitting the build in two: `electron-builder --win` produces only `dist/win-unpacked/` (no NSIS), and then `scripts/make-installer.js` shells out to native `makensis` against `build/installer.nsi` to produce `dist/TeacherDeskSetup.exe`. The result is a real PE32 NSIS self-extracting installer, identical in shape to what electron-builder's NSIS target would emit.
 
+### Code-signing
+`build:win` Authenticode-signs both `Teacher Desk.exe` (inside `win-unpacked`) and the final `TeacherDeskSetup.exe`. Signing uses `osslsigncode` (cross-platform, Linux-friendly — no `signtool.exe` or Wine required) via `scripts/sign.js`, which reads `build.win.certificateFile` / `publisherName` from `package.json` and the cert password from the `WIN_CSC_KEY_PASSWORD` env var. A self-signed dev cert can be generated via `npm run cert:dev` (verifies the pipeline; does NOT remove SmartScreen warnings — only a real CA-issued cert does). The `.pfx` file is gitignored. See `teacher-desk/README.md` "Code-signing" for full details.
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces

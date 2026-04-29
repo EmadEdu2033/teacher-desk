@@ -29,19 +29,72 @@ npm start
 ## Build the Windows installer
 
 ```
-npm run build:win
+WIN_CSC_KEY_PASSWORD=<your-pfx-password> npm run build:win
 ```
 
-This runs two steps:
+This runs four steps:
 
 1. `npm run build:unpacked` → `electron-builder` produces `dist/win-unpacked/` (the unpacked Electron app).
-2. `npm run build:installer` → native `makensis` packages it into `dist/TeacherDeskSetup.exe` using `build/installer.nsi` (an MUI2 wizard with a directory page, Start Menu + Desktop shortcuts, an uninstaller, and Add/Remove Programs registration).
+2. `npm run sign:exe` → code-signs `dist/win-unpacked/Teacher Desk.exe`.
+3. `npm run build:installer` → native `makensis` packages the (now-signed) app into `dist/TeacherDeskSetup.exe` using `build/installer.nsi` (an MUI2 wizard with a directory page, Start Menu + Desktop shortcuts, an uninstaller, and Add/Remove Programs registration).
+4. `npm run sign:installer` → code-signs `dist/TeacherDeskSetup.exe`.
 
-Requires `makensis` on `PATH`:
-- Linux: install the `nsis` package (e.g. `apt install nsis`, or `pkgs.nsis` on Nix).
-- Windows: install NSIS from https://nsis.sourceforge.io/.
+Requires `makensis` and `osslsigncode` on `PATH`:
+- Linux: install the `nsis` and `osslsigncode` packages (e.g. `apt install nsis osslsigncode`, or `pkgs.nsis` + `pkgs.osslsigncode` on Nix — both already in `replit.nix`).
+- Windows: install NSIS from https://nsis.sourceforge.io/. (You can also sign with `signtool.exe` from the Windows SDK on Windows.)
 
 > **Why we shell out to `makensis` directly:** `electron-builder`'s built-in NSIS target invokes `rcedit.exe` through Wine to embed the icon and version metadata into the installer stub. Wine crashes with "Bad system call" inside the Replit Linux sandbox, so we skip electron-builder's NSIS step entirely and call `makensis` ourselves with a hand-written `installer.nsi`. The end result is the same `TeacherDeskSetup.exe` an electron-builder NSIS run would produce, just without the icon-embed step.
+
+## Code-signing (removes the Windows SmartScreen "Unknown publisher" warning)
+
+Both `Teacher Desk.exe` and `TeacherDeskSetup.exe` are signed during `build:win`
+using `osslsigncode` (a cross-platform Authenticode signer that works on Linux
+without requiring `signtool.exe` or Wine).
+
+**Configuration** lives in `package.json` → `build.win`:
+
+| Field                 | Purpose                                                         |
+| --------------------- | --------------------------------------------------------------- |
+| `certificateFile`     | Path to the `.pfx` (PKCS#12) cert file. Default: `build/cert.pfx`. |
+| `certificatePassword` | Documents the env var name (`WIN_CSC_KEY_PASSWORD`) — never store the actual password here. |
+| `publisherName`       | Subject name shown in Windows' UAC / SmartScreen dialog.        |
+
+**Required env var:**
+- `WIN_CSC_KEY_PASSWORD` — password protecting your `.pfx` file.
+
+**Optional env var:**
+- `WIN_CSC_LINK` — overrides `certificateFile` (e.g. point at a CI secret path).
+- `TEACHER_DESK_SKIP_SIGN=1` — let the build succeed even when no cert is present (handy for unsigned dev builds).
+
+### Production: a real CA-issued certificate
+
+To actually remove the SmartScreen warning for end users, you need a code-signing
+certificate from a public CA (DigiCert, Sectigo, SSL.com, etc.):
+
+- **OV (Organization Validation)** — cheaper, but new certs build "reputation"
+  over downloads before SmartScreen stops warning users.
+- **EV (Extended Validation)** — more expensive and requires a hardware token,
+  but removes the SmartScreen warning **immediately** on the first download.
+
+Once you have the `.pfx`, drop it at `teacher-desk/build/cert.pfx` (or set
+`WIN_CSC_LINK`), set `WIN_CSC_KEY_PASSWORD`, and run `npm run build:win`. The
+`.pfx` is gitignored so the private key never gets committed.
+
+### Local / dev: self-signed certificate
+
+For verifying the signing pipeline locally (does **not** remove SmartScreen,
+because the cert isn't trusted by Windows):
+
+```
+npm run cert:dev                     # writes build/cert.pfx (password: teacherdesk)
+WIN_CSC_KEY_PASSWORD=teacherdesk npm run build:win
+```
+
+After signing, the embedded signature can be inspected on Windows via
+right-click → **Properties → Digital Signatures**, or on Linux with
+`osslsigncode verify -in dist/TeacherDeskSetup.exe`.
+
+See https://www.electron.build/code-signing for additional CA recommendations.
 
 ## Browser preview (no Electron)
 
