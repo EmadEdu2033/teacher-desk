@@ -120,7 +120,10 @@ button { font-family: inherit; cursor: pointer; }
   position: absolute;
   width: 8000px; height: 8000px;
   left: -4000px; top: -4000px;
-  transform-origin: 0 0;
+  /* Anchor scaling at the logical (0,0) of note coords, which is the
+     middle of the 8000x8000 surface. This keeps view-math simple:
+     a note at coord (n.x, n.y) appears at (n.x*scale + tx, n.y*scale + ty). */
+  transform-origin: 4000px 4000px;
 }
 
 .wall-controls {

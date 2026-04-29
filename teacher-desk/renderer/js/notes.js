@@ -205,10 +205,14 @@ function applyTransform() {
 }
 
 function centerView() {
+  // With surface transform-origin at note coord (0,0):
+  //   visual_x of a point at note coord (x,y) = x*scale + view.tx
+  // To center a default 240x220 note (from coord 0,0) on screen at scale=1:
+  //   view.tx = r.width/2 - 120; view.ty = r.height/2 - 110
   const wall = wallEl();
   const r = wall.getBoundingClientRect();
-  view.tx = -SURFACE_OFFSET + r.width / 2 - 120;
-  view.ty = -SURFACE_OFFSET + r.height / 2 - 110;
+  view.tx = r.width / 2 - 120;
+  view.ty = r.height / 2 - 110;
   view.scale = 1;
   applyTransform();
 }
@@ -224,8 +228,10 @@ function fitView() {
   const w = maxX - minX, h = maxY - minY;
   const margin = 80;
   view.scale = Math.min(1, (r.width - margin*2) / w, (r.height - margin*2) / h);
-  view.tx = -SURFACE_OFFSET * view.scale - minX * view.scale + r.width/2 - (w*view.scale)/2;
-  view.ty = -SURFACE_OFFSET * view.scale - minY * view.scale + r.height/2 - (h*view.scale)/2;
+  // Center the bounding box: bbox center in note coords is (minX + w/2, minY + h/2),
+  // visually at (cx*scale + tx). We want it at the wall center.
+  view.tx = r.width  / 2 - (minX + w / 2) * view.scale;
+  view.ty = r.height / 2 - (minY + h / 2) * view.scale;
   applyTransform();
 }
 
@@ -260,8 +266,10 @@ async function createNoteAtCenter(color) {
   // map screen-center to surface coords (undo translate+scale)
   const screenCx = r.width / 2;
   const screenCy = r.height / 2;
-  const x = (screenCx - view.tx) / view.scale - SURFACE_OFFSET - 120 + (Math.random()*40 - 20);
-  const y = (screenCy - view.ty) / view.scale - SURFACE_OFFSET - 110 + (Math.random()*40 - 20);
+  // Inverse of: visual_x = x*scale + tx  (with transform-origin at note coord 0,0)
+  // Solve for x so the note's center sits at the screen center.
+  const x = (screenCx - view.tx) / view.scale - 120 + (Math.random()*40 - 20);
+  const y = (screenCy - view.ty) / view.scale - 110 + (Math.random()*40 - 20);
   const n = await storage.notes.create({ color, x, y, width: 240, height: 220 });
   notes.push(n);
   const el = renderNote(n);
