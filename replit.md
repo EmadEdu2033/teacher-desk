@@ -13,13 +13,13 @@ Located in `teacher-desk/` — **standalone npm project, NOT part of the pnpm wo
 - **Runtime**: Electron 33 (Chromium + Node)
 - **UI**: Vanilla HTML / CSS / ES modules (no framework)
 - **Database**: SQLite via `better-sqlite3` 11
-- **Packaging**: `electron-builder` 25 → `dist/TeacherDesk-Windows.zip`
+- **Packaging**: `electron-builder` 25 (unpack only) + native `makensis` → `dist/TeacherDeskSetup.exe`
 - **Storage location** (on user's machine): `%APPDATA%\Teacher Desk\teacher-desk.db`
 
 ### Features
-- Sticky notes wall: drag, resize, color picker (chosen *before* creating), auto-save, pan/fit/reset, context menu
-- Tasks: priority, due date/time, sub-tasks, in-app reminders (20s polling, WebAudio beep + system notification)
-- Bilingual EN / AR with full RTL switching at runtime
+- Sticky notes wall: drag, resize, color picker (chosen *before* creating), font size (small/medium/large), auto-save, pan/fit/reset, context menu — works with mouse and touch (Pointer Events)
+- Tasks: priority, due date/time, sub-tasks, **category filter**, in-app reminders (20s polling, WebAudio beep + system notification)
+- Bilingual EN / AR with full RTL switching at runtime — every confirm dialog and placeholder is translated
 - Light / Dark themes
 - **Podium mode**: Electron's `setContentProtection(true)` hides the window from screen-share / OBS
 - Backup / restore (export+import full DB via native dialog)
@@ -57,13 +57,13 @@ cd teacher-desk
 npm install
 npm start          # launches Electron
 npm run preview    # browser-only preview on $PORT (uses localStorage fallback)
-npm run build:win  # produces dist/TeacherDesk-Windows.zip
+npm run build:win  # produces dist/TeacherDeskSetup.exe (NSIS installer)
 ```
 
 ### Distribution
-The end-user downloads `TeacherDesk-Windows.zip` (~112 MB), extracts it, and double-clicks `Teacher Desk.exe` inside. No installer wizard, no Python, no Node — extract and run.
+The end-user downloads `TeacherDeskSetup.exe` (~76 MB) and double-clicks it. The MUI2 wizard lets them pick the install folder, then it deploys the app, creates Desktop + Start Menu shortcuts, registers an uninstaller in *Add/Remove Programs*, and launches Teacher Desk. No Python, no Node, no extraction.
 
-> **Why ZIP and not `TeacherDeskSetup.exe`?** The original plan was an NSIS installer. electron-builder's NSIS target on Linux requires `wine` to run `rcedit.exe` for embedding the icon and version metadata into the installer stub. Wine crashes with "Bad system call" inside the Replit sandbox (the kernel blocks syscalls wine needs). A ZIP of the unpacked app is functionally equivalent for the user — the same `Teacher Desk.exe` runs from inside the extracted folder. To produce a real `TeacherDeskSetup.exe`, run `npm run build:win` on a Windows machine or any Linux box where wine works.
+> **How the installer is built in this sandbox.** `electron-builder`'s NSIS target on Linux invokes `rcedit.exe` through Wine to embed the icon and version metadata into the installer stub. Wine crashes with "Bad system call" inside the Replit sandbox. We work around it by splitting the build in two: `electron-builder --win` produces only `dist/win-unpacked/` (no NSIS), and then `scripts/make-installer.js` shells out to native `makensis` against `build/installer.nsi` to produce `dist/TeacherDeskSetup.exe`. The result is a real PE32 NSIS self-extracting installer, identical in shape to what electron-builder's NSIS target would emit.
 
 ## Stack
 

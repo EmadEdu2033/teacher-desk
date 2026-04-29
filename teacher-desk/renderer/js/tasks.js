@@ -23,6 +23,17 @@ function bindToolbar() {
   document.getElementById('newTaskBtn').addEventListener('click', () => openModal(null));
   document.getElementById('taskSearch').addEventListener('input', render);
   document.getElementById('taskFilterPriority').addEventListener('change', render);
+  document.getElementById('taskFilterCategory').addEventListener('change', render);
+}
+
+function refreshCategoryOptions() {
+  const sel = document.getElementById('taskFilterCategory');
+  if (!sel) return;
+  const current = sel.value;
+  const cats = Array.from(new Set(tasks.map(x => (x.category || '').trim()).filter(Boolean))).sort();
+  sel.innerHTML = `<option value="">${escape(t('tasks.allCategories'))}</option>` +
+    cats.map(c => `<option value="${escape(c)}">${escape(c)}</option>`).join('');
+  if (cats.includes(current)) sel.value = current;
 }
 
 function escape(s) {
@@ -55,8 +66,10 @@ function groupTasks(list) {
 }
 
 function render() {
+  refreshCategoryOptions();
   const search = document.getElementById('taskSearch').value.trim().toLowerCase();
   const prio = document.getElementById('taskFilterPriority').value;
+  const cat  = document.getElementById('taskFilterCategory').value;
   let list = tasks.slice();
   if (search) list = list.filter(t =>
     (t.title||'').toLowerCase().includes(search) ||
@@ -64,6 +77,7 @@ function render() {
     (t.category||'').toLowerCase().includes(search)
   );
   if (prio) list = list.filter(t => t.priority === prio);
+  if (cat)  list = list.filter(t => (t.category||'') === cat);
 
   const g = groupTasks(list);
   const root = document.getElementById('taskGroups');
@@ -129,7 +143,7 @@ function renderRow(task, group) {
   });
   row.querySelector('[data-act="edit"]').addEventListener('click', () => openModal(task));
   row.querySelector('[data-act="del"]').addEventListener('click', async () => {
-    if (confirm('Delete this task?')) { await storage.tasks.delete(task.id); await reload(); }
+    if (confirm(t('tasks.confirmDelete'))) { await storage.tasks.delete(task.id); await reload(); }
   });
   row.querySelectorAll('[data-sub]').forEach(cb => {
     cb.addEventListener('change', async (e) => {
@@ -188,7 +202,7 @@ function addSubtaskInput(title, completed, id) {
   if (id) row.dataset.id = id;
   row.innerHTML = `
     <input type="checkbox" ${completed?'checked':''} />
-    <input type="text" value="${escape(title || '')}" placeholder="Sub-task" />
+    <input type="text" value="${escape(title || '')}" placeholder="${escape(t('tasks.subtaskPlaceholder'))}" />
     <button class="remove" type="button" title="Remove">✕</button>
   `;
   row.querySelector('.remove').addEventListener('click', () => row.remove());

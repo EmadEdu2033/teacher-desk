@@ -31,6 +31,7 @@ const web = {
         title: note.title || '',
         body: note.body || '',
         color: note.color || 'yellow',
+        font_size: note.font_size || 'medium',
         x: note.x ?? 40,
         y: note.y ?? 40,
         width: note.width ?? 240,

@@ -29,6 +29,7 @@ function openDb() {
       title TEXT DEFAULT '',
       body TEXT DEFAULT '',
       color TEXT DEFAULT 'yellow',
+      font_size TEXT DEFAULT 'medium',
       x REAL DEFAULT 0,
       y REAL DEFAULT 0,
       width REAL DEFAULT 240,
@@ -66,6 +67,12 @@ function openDb() {
       value TEXT
     );
   `);
+
+  // Migration: add font_size column to existing notes tables
+  const noteCols = db.prepare("PRAGMA table_info(notes)").all().map(c => c.name);
+  if (!noteCols.includes('font_size')) {
+    db.exec("ALTER TABLE notes ADD COLUMN font_size TEXT DEFAULT 'medium'");
+  }
 }
 
 function getSetting(key, fallback) {
@@ -193,12 +200,13 @@ ipcMain.handle('notes:create', (_e, note) => {
   const id = note.id || cryptoRandomId();
   const maxZ = (db.prepare('SELECT COALESCE(MAX(z),0) AS m FROM notes').get().m) || 0;
   const now = Date.now();
-  db.prepare(`INSERT INTO notes(id,title,body,color,x,y,width,height,z,created_at,updated_at)
-              VALUES (?,?,?,?,?,?,?,?,?,?,?)`).run(
+  db.prepare(`INSERT INTO notes(id,title,body,color,font_size,x,y,width,height,z,created_at,updated_at)
+              VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`).run(
     id,
     note.title || '',
     note.body || '',
     note.color || 'yellow',
+    note.font_size || 'medium',
     note.x ?? 40,
     note.y ?? 40,
     note.width ?? 240,
@@ -211,7 +219,7 @@ ipcMain.handle('notes:create', (_e, note) => {
 });
 
 ipcMain.handle('notes:update', (_e, note) => {
-  const fields = ['title','body','color','x','y','width','height','z'];
+  const fields = ['title','body','color','font_size','x','y','width','height','z'];
   const sets = [];
   const values = [];
   for (const f of fields) {

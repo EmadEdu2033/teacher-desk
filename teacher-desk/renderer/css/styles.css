@@ -228,6 +228,17 @@ button { font-family: inherit; cursor: pointer; }
 .menu button.danger { color: var(--danger); }
 .menu .menu-section { font-size: 11px; color: var(--text-muted); padding: 8px 12px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 .menu .menu-colors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 6px 12px 8px; }
+.menu .menu-fontsize { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px 12px 8px; }
+.menu .menu-fontsize button { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; }
+.menu .menu-fontsize button:hover { background: var(--surface-2); border-color: var(--accent); }
+
+/* Note font sizes */
+.sticky.font-small  .sticky-title { font-size: 12px; }
+.sticky.font-small  .sticky-body  { font-size: 11px; line-height: 1.4; }
+.sticky.font-medium .sticky-title { font-size: 14px; }
+.sticky.font-medium .sticky-body  { font-size: 13px; line-height: 1.45; }
+.sticky.font-large  .sticky-title { font-size: 17px; }
+.sticky.font-large  .sticky-body  { font-size: 15px; line-height: 1.55; }
 
 /* Tasks */
 .tasks-toolbar {

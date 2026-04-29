@@ -9,7 +9,9 @@
   "scripts": {
     "start": "electron .",
     "preview": "node scripts/preview-server.js",
-    "build:win": "electron-builder --win --x64 --publish never",
+    "build:unpacked": "electron-builder --win --x64 --publish never",
+    "build:installer": "node scripts/make-installer.js",
+    "build:win": "npm run build:unpacked && npm run build:installer",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {

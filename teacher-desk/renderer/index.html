@@ -71,6 +71,12 @@
           <button class="swatch sm" data-color="white"  style="background:#ffffff;border:1px solid #ddd"></button>
           <button class="swatch sm" data-color="dark"   style="background:#3b3b46"></button>
         </div>
+        <div class="menu-section" data-i18n="notes.fontSize">Font size</div>
+        <div class="menu-fontsize">
+          <button data-action="fontSize" data-size="small"  data-i18n="notes.fontSmall">Small</button>
+          <button data-action="fontSize" data-size="medium" data-i18n="notes.fontMedium">Medium</button>
+          <button data-action="fontSize" data-size="large"  data-i18n="notes.fontLarge">Large</button>
+        </div>
         <button data-action="delete" class="danger" data-i18n="notes.delete">Delete</button>
       </div>
     </section>
@@ -85,6 +91,9 @@
           <option value="high"   data-i18n="tasks.high">High</option>
           <option value="normal" data-i18n="tasks.normal">Normal</option>
           <option value="low"    data-i18n="tasks.low">Low</option>
+        </select>
+        <select id="taskFilterCategory">
+          <option value="" data-i18n="tasks.allCategories">All categories</option>
         </select>
         <button id="newTaskBtn" class="primary-btn" data-i18n="tasks.new">+ New Task</button>
       </div>

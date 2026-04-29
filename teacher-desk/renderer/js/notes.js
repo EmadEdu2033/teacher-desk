@@ -33,13 +33,14 @@ async function loadAndRender() {
 
 function renderNote(n) {
   const el = document.createElement('div');
-  el.className = `sticky ${n.color || 'yellow'}`;
+  el.className = `sticky ${n.color || 'yellow'} font-${n.font_size || 'medium'}`;
   el.dataset.id = n.id;
   el.style.left   = `${SURFACE_OFFSET + (n.x || 0)}px`;
   el.style.top    = `${SURFACE_OFFSET + (n.y || 0)}px`;
   el.style.width  = `${n.width || 240}px`;
   el.style.height = `${n.height || 220}px`;
   el.style.zIndex = String(n.z || 1);
+  el.style.touchAction = 'none';
 
   el.innerHTML = `
     <div class="sticky-handle">
@@ -82,28 +83,32 @@ function bindNoteInteractions(el, n) {
   bodyEl.addEventListener('input', scheduleSave);
   // Don't intercept events while editing text fields
   [titleEl, bodyEl].forEach(inp => {
-    inp.addEventListener('mousedown', e => e.stopPropagation());
+    inp.addEventListener('pointerdown', e => e.stopPropagation());
   });
 
-  // Drag from handle
-  handle.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return;
+  // Drag from handle (mouse + touch via pointer events)
+  handle.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     if (e.target.classList.contains('menu-btn')) return;
     e.preventDefault();
     bringToFront(el, n);
     const startX = e.clientX, startY = e.clientY;
     const startLeft = parseFloat(el.style.left), startTop = parseFloat(el.style.top);
     el.classList.add('dragging');
+    handle.setPointerCapture(e.pointerId);
 
     function onMove(ev) {
+      if (ev.pointerId !== e.pointerId) return;
       const dx = (ev.clientX - startX) / view.scale;
       const dy = (ev.clientY - startY) / view.scale;
       el.style.left = `${startLeft + dx}px`;
       el.style.top  = `${startTop + dy}px`;
     }
-    function onUp() {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
+    function onUp(ev) {
+      if (ev.pointerId !== e.pointerId) return;
+      handle.removeEventListener('pointermove', onMove);
+      handle.removeEventListener('pointerup', onUp);
+      handle.removeEventListener('pointercancel', onUp);
       el.classList.remove('dragging');
       const newX = parseFloat(el.style.left) - SURFACE_OFFSET;
       const newY = parseFloat(el.style.top)  - SURFACE_OFFSET;
@@ -111,37 +116,43 @@ function bindNoteInteractions(el, n) {
       const idx = notes.findIndex(x => x.id === n.id);
       if (idx >= 0) { notes[idx].x = newX; notes[idx].y = newY; }
     }
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
+    handle.addEventListener('pointermove', onMove);
+    handle.addEventListener('pointerup', onUp);
+    handle.addEventListener('pointercancel', onUp);
   });
 
-  // Resize
-  resize.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return;
+  // Resize (pointer events)
+  resize.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     e.preventDefault(); e.stopPropagation();
     bringToFront(el, n);
     const startX = e.clientX, startY = e.clientY;
     const startW = el.offsetWidth, startH = el.offsetHeight;
+    resize.setPointerCapture(e.pointerId);
     function onMove(ev) {
+      if (ev.pointerId !== e.pointerId) return;
       const dw = (ev.clientX - startX) / view.scale;
       const dh = (ev.clientY - startY) / view.scale;
       el.style.width  = `${Math.max(140, startW + dw)}px`;
       el.style.height = `${Math.max(120, startH + dh)}px`;
     }
-    function onUp() {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
+    function onUp(ev) {
+      if (ev.pointerId !== e.pointerId) return;
+      resize.removeEventListener('pointermove', onMove);
+      resize.removeEventListener('pointerup', onUp);
+      resize.removeEventListener('pointercancel', onUp);
       const w = parseFloat(el.style.width), h = parseFloat(el.style.height);
       storage.notes.update({ id: n.id, width: w, height: h });
       const idx = notes.findIndex(x => x.id === n.id);
       if (idx >= 0) { notes[idx].width = w; notes[idx].height = h; }
     }
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
+    resize.addEventListener('pointermove', onMove);
+    resize.addEventListener('pointerup', onUp);
+    resize.addEventListener('pointercancel', onUp);
   });
 
   // Bring to front on click
-  el.addEventListener('mousedown', () => bringToFront(el, n));
+  el.addEventListener('pointerdown', () => bringToFront(el, n));
 
   // Menu button & right-click
   menuBtn.addEventListener('click', (e) => { e.stopPropagation(); openMenu(el, n, e.clientX, e.clientY); });
@@ -161,24 +172,32 @@ async function bringToFront(el, n) {
 
 function bindWallEvents() {
   const wall = wallEl();
-  let panning = false, startX = 0, startY = 0, startTx = 0, startTy = 0;
+  wall.style.touchAction = 'none';
+  let panning = false, panId = null;
+  let startX = 0, startY = 0, startTx = 0, startTy = 0;
 
-  wall.addEventListener('mousedown', (e) => {
+  wall.addEventListener('pointerdown', (e) => {
     if (e.target !== wall && e.target !== surfaceEl()) return;
-    panning = true;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    panning = true; panId = e.pointerId;
     wall.classList.add('panning');
+    wall.setPointerCapture(e.pointerId);
     startX = e.clientX; startY = e.clientY;
     startTx = view.tx; startTy = view.ty;
   });
-  window.addEventListener('mousemove', (e) => {
-    if (!panning) return;
+  wall.addEventListener('pointermove', (e) => {
+    if (!panning || e.pointerId !== panId) return;
     view.tx = startTx + (e.clientX - startX);
     view.ty = startTy + (e.clientY - startY);
     applyTransform();
   });
-  window.addEventListener('mouseup', () => {
-    if (panning) { panning = false; wall.classList.remove('panning'); }
-  });
+  const endPan = (e) => {
+    if (!panning || (e && e.pointerId !== panId)) return;
+    panning = false; panId = null;
+    wall.classList.remove('panning');
+  };
+  wall.addEventListener('pointerup', endPan);
+  wall.addEventListener('pointercancel', endPan);
 }
 
 function applyTransform() {
@@ -293,12 +312,20 @@ function bindContextMenu() {
       surfaceEl().appendChild(renderNote(copy));
       updateStatus();
     } else if (action === 'delete') {
-      if (confirm('Delete this note?')) {
+      if (confirm(t('notes.confirmDelete'))) {
         await storage.notes.delete(id);
         el.remove();
         notes = notes.filter(x => x.id !== id);
         updateStatus();
       }
+    } else if (action === 'fontSize') {
+      const size = e.target.dataset.size;
+      el.classList.remove('font-small','font-medium','font-large');
+      el.classList.add(`font-${size}`);
+      await storage.notes.update({ id, font_size: size });
+      n.font_size = size;
+      menu.classList.add('hidden');
+      return;
     }
     menu.classList.add('hidden');
   });
