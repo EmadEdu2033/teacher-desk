@@ -50,3 +50,10 @@ Thumbs.db
 
 # Build deliverables (presented via present_asset, not versioned)
 /downloads
+
+# Code-signing certificates — never commit private keys / .pfx files.
+# The .pfx contains the private key; treat it as a secret.
+teacher-desk/build/cert.pfx
+teacher-desk/build/*.pfx
+teacher-desk/build/*.key
+teacher-desk/build/*.pem
