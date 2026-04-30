@@ -48,8 +48,13 @@ Thumbs.db
 .cache/
 .local/
 
-# Build deliverables (presented via present_asset, not versioned)
+# Build deliverables (presented via present_asset, not versioned).
+# Only the project-root downloads/ is canonical (served by the Teacher Desk
+# preview server). The teacher-desk/downloads/ path was a duplicate that
+# accidentally drifted; keep it ignored so a stray cp never recreates the
+# split source of truth.
 /downloads
+teacher-desk/downloads/
 
 # Code-signing certificates — never commit private keys / .pfx files.
 # The .pfx contains the private key; treat it as a secret.

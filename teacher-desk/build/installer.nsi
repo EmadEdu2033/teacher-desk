@@ -31,6 +31,21 @@ SetCompressor /SOLID lzma
 ShowInstDetails show
 ShowUnInstDetails show
 
+; CRITICAL — DO NOT REMOVE.
+;
+; NSIS embeds a CRC32 of the whole installer in the last 4 bytes of the .exe
+; and re-checks it at launch. After we build the installer with makensis we
+; run osslsigncode on it, which appends a PE certificate table to the end of
+; the file. That shifts the original "last 4 bytes" inward, so NSIS would
+; read from the middle of the signature blob as the CRC and abort with
+; "Installer integrity check has failed." before the wizard ever appears.
+;
+; The Authenticode signature itself is a much stronger integrity guarantee
+; than CRC32 (and Windows verifies it before showing the UAC prompt), so
+; turning the redundant runtime CRC off here is the standard fix for signed
+; NSIS installers — see the NSIS Wiki and the electron-builder docs.
+CRCCheck off
+
 ; Installer + uninstaller .exe icon (the "green chalkboard with blue frame")
 Icon   "icon.ico"
 UninstallIcon "icon.ico"

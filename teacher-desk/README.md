@@ -65,6 +65,8 @@ Requires `makensis` and `osslsigncode` on `PATH`:
 
 > **Why we shell out to `makensis` directly:** `electron-builder`'s built-in NSIS target invokes `rcedit.exe` through Wine to embed the icon and version metadata into the installer stub. Wine crashes with "Bad system call" inside the Replit Linux sandbox, so we skip electron-builder's NSIS step entirely and call `makensis` ourselves with a hand-written `installer.nsi`. The end result is the same `TeacherDeskSetup.exe` an electron-builder NSIS run would produce, just without the icon-embed step.
 
+> **Important — signed installers must keep `CRCCheck off`:** `build/installer.nsi` sets `CRCCheck off` on purpose. The signing step (`npm run sign:installer`) appends a PE certificate table to the end of the `.exe`, which shifts the bytes NSIS expects to find its embedded CRC32 in. With the default `CRCCheck on`, every signed build aborts on launch with **"NSIS Error: Installer integrity check has failed"** before the wizard appears. The Authenticode signature itself is a much stronger integrity guarantee than CRC32 (Windows verifies it before showing the UAC prompt), so this is safe — and it's the same workaround the NSIS Wiki and electron-builder docs recommend for signed builds. Do not remove that line.
+
 ## Cut a new release
 
 ```
