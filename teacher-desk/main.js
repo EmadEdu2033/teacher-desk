@@ -1,6 +1,6 @@
 'use strict';
 
-const { app, BrowserWindow, ipcMain, Tray, Menu, Notification, dialog, nativeTheme, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, Notification, dialog, nativeTheme, shell, powerMonitor } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -141,19 +141,50 @@ function rotatePreRestoreBackups(keep = 3) {
   }
 }
 
+let lastAutoBackupDate = null;
+let autoBackupTimer = null;
+
 function runAutoBackup() {
   try {
     if (!fs.existsSync(dbPath)) return;
     ensureBackupsDir();
-    const target = path.join(backupsDir, `teacher-desk-${todayStamp()}.db`);
+    const stamp = todayStamp();
+    const target = path.join(backupsDir, `teacher-desk-${stamp}.db`);
     if (!fs.existsSync(target)) {
       try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch {}
       fs.copyFileSync(dbPath, target);
     }
+    lastAutoBackupDate = stamp;
     rotateAutoBackups(AUTO_BACKUP_KEEP);
   } catch (err) {
     console.warn('Auto-backup failed:', err && err.message ? err.message : err);
   }
+}
+
+function checkAutoBackupForToday() {
+  try {
+    if (todayStamp() !== lastAutoBackupDate) {
+      runAutoBackup();
+    }
+  } catch (err) {
+    console.warn('Auto-backup check failed:', err && err.message ? err.message : err);
+  }
+}
+
+function startAutoBackupScheduler() {
+  if (autoBackupTimer) return;
+  // Hourly poll: cheap, non-blocking, and self-corrects after sleep/wake
+  // since timers don't fire while the OS is suspended.
+  const HOUR_MS = 60 * 60 * 1000;
+  autoBackupTimer = setInterval(checkAutoBackupForToday, HOUR_MS);
+  if (autoBackupTimer.unref) autoBackupTimer.unref();
+
+  // When the laptop lid is opened or the machine resumes from sleep,
+  // check immediately so a missed midnight rollover is captured right away.
+  try {
+    powerMonitor.on('resume', checkAutoBackupForToday);
+    powerMonitor.on('unlock-screen', checkAutoBackupForToday);
+  } catch {}
 }
 
 let mainWindow = null;
@@ -247,6 +278,7 @@ app.whenReady().then(() => {
     return;
   }
   runAutoBackup();
+  startAutoBackupScheduler();
   createWindow();
   createTray();
 
