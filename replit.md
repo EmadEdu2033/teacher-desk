@@ -23,6 +23,7 @@ Located in `teacher-desk/` — **standalone npm project, NOT part of the pnpm wo
 - Light / Dark themes
 - **Podium mode**: Electron's `setContentProtection(true)` hides the window from screen-share / OBS
 - Backup / restore (export+import full DB via native dialog)
+- **Automatic daily backups**: on app launch, snapshots `teacher-desk.db` to `%APPDATA%\Teacher Desk\backups\teacher-desk-YYYY-MM-DD.db` if today's snapshot is missing; keeps the 7 most recent. Settings tab shows the folder path and a per-snapshot "Restore" button (a `prerestore` safety copy of the live DB is taken first, last 3 retained).
 - System tray integration
 
 ### Architecture
@@ -49,7 +50,7 @@ teacher-desk/
 - `notes:{list,create,update,delete,bringToFront}`
 - `tasks:{list,create,update,delete}`
 - `settings:{get,set}`
-- `podium:set`, `notify`, `backup:{export,import}`, `app:openDataFolder`
+- `podium:set`, `notify`, `backup:{export,import,listAuto,restoreAuto,openAutoFolder}`, `app:openDataFolder`
 
 ### Running locally (developer)
 ```bash

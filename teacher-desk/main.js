@@ -16,6 +16,9 @@ try {
 const userDataDir = app.getPath('userData');
 if (!fs.existsSync(userDataDir)) fs.mkdirSync(userDataDir, { recursive: true });
 const dbPath = path.join(userDataDir, 'teacher-desk.db');
+const backupsDir = path.join(userDataDir, 'backups');
+const AUTO_BACKUP_KEEP = 7;
+const AUTO_BACKUP_RE = /^teacher-desk-(\d{4}-\d{2}-\d{2})\.db$/;
 
 let db = null;
 function openDb() {
@@ -83,6 +86,74 @@ function getSetting(key, fallback) {
 function setSetting(key, value) {
   db.prepare('INSERT INTO settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value')
     .run(key, JSON.stringify(value));
+}
+
+function ensureBackupsDir() {
+  if (!fs.existsSync(backupsDir)) fs.mkdirSync(backupsDir, { recursive: true });
+}
+
+function todayStamp(d = new Date()) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function listAutoBackupFiles() {
+  ensureBackupsDir();
+  return fs.readdirSync(backupsDir)
+    .filter(f => AUTO_BACKUP_RE.test(f))
+    .map(name => {
+      const full = path.join(backupsDir, name);
+      let stat = null;
+      try { stat = fs.statSync(full); } catch {}
+      return {
+        name,
+        path: full,
+        date: name.match(AUTO_BACKUP_RE)[1],
+        size: stat ? stat.size : 0,
+        mtime: stat ? stat.mtimeMs : 0,
+      };
+    })
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function rotateAutoBackups(keep = AUTO_BACKUP_KEEP) {
+  const files = listAutoBackupFiles();
+  for (const f of files.slice(keep)) {
+    try { fs.unlinkSync(f.path); } catch {}
+  }
+}
+
+function rotatePreRestoreBackups(keep = 3) {
+  ensureBackupsDir();
+  const files = fs.readdirSync(backupsDir)
+    .filter(f => /^teacher-desk-prerestore-\d+\.db$/.test(f))
+    .map(name => {
+      const full = path.join(backupsDir, name);
+      let mtime = 0;
+      try { mtime = fs.statSync(full).mtimeMs; } catch {}
+      return { name, full, mtime };
+    })
+    .sort((a, b) => b.mtime - a.mtime);
+  for (const f of files.slice(keep)) {
+    try { fs.unlinkSync(f.full); } catch {}
+  }
+}
+
+function runAutoBackup() {
+  try {
+    if (!fs.existsSync(dbPath)) return;
+    ensureBackupsDir();
+    const target = path.join(backupsDir, `teacher-desk-${todayStamp()}.db`);
+    if (!fs.existsSync(target)) {
+      try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch {}
+      fs.copyFileSync(dbPath, target);
+    }
+    rotateAutoBackups(AUTO_BACKUP_KEEP);
+  } catch (err) {
+    console.warn('Auto-backup failed:', err && err.message ? err.message : err);
+  }
 }
 
 let mainWindow = null;
@@ -175,6 +246,7 @@ app.whenReady().then(() => {
     app.exit(1);
     return;
   }
+  runAutoBackup();
   createWindow();
   createTray();
 
@@ -374,6 +446,64 @@ ipcMain.handle('backup:import', async () => {
 ipcMain.handle('app:openDataFolder', () => {
   shell.openPath(userDataDir);
   return true;
+});
+
+ipcMain.handle('backup:listAuto', () => {
+  try {
+    const files = listAutoBackupFiles().map(f => ({
+      name: f.name, date: f.date, size: f.size, mtime: f.mtime,
+    }));
+    return { ok: true, dir: backupsDir, files };
+  } catch (e) {
+    return { ok: false, error: e.message, dir: backupsDir, files: [] };
+  }
+});
+
+ipcMain.handle('backup:openAutoFolder', () => {
+  try {
+    ensureBackupsDir();
+    shell.openPath(backupsDir);
+    return { ok: true, dir: backupsDir };
+  } catch (e) { return { ok: false, error: e.message }; }
+});
+
+ipcMain.handle('backup:restoreAuto', async (_e, name) => {
+  if (!name || typeof name !== 'string' || !AUTO_BACKUP_RE.test(name)) {
+    return { ok: false, error: 'Invalid backup name' };
+  }
+  const source = path.join(backupsDir, name);
+  if (!fs.existsSync(source)) return { ok: false, error: 'Backup not found' };
+
+  const confirm = await dialog.showMessageBox(mainWindow, {
+    type: 'warning',
+    buttons: ['Cancel', 'Restore'],
+    defaultId: 0,
+    cancelId: 0,
+    title: 'Restore from backup',
+    message: `Restore Teacher Desk from "${name}"?`,
+    detail: 'Your current notes and tasks will be replaced. A safety copy of your current data will be saved first.',
+  });
+  if (confirm.response !== 1) return { ok: false, canceled: true };
+
+  try {
+    if (db) {
+      try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch {}
+      db.close();
+      db = null;
+    }
+    ensureBackupsDir();
+    if (fs.existsSync(dbPath)) {
+      const safety = path.join(backupsDir, `teacher-desk-prerestore-${Date.now()}.db`);
+      try { fs.copyFileSync(dbPath, safety); } catch {}
+      rotatePreRestoreBackups(3);
+    }
+    fs.copyFileSync(source, dbPath);
+    openDb();
+    return { ok: true };
+  } catch (e) {
+    try { openDb(); } catch {}
+    return { ok: false, error: e.message };
+  }
 });
 
 function cryptoRandomId() {

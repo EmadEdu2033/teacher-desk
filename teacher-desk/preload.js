@@ -25,8 +25,11 @@ contextBridge.exposeInMainWorld('td', {
   },
   notify:    (msg)  => ipcRenderer.invoke('notify', msg),
   backup: {
-    export: () => ipcRenderer.invoke('backup:export'),
-    import: () => ipcRenderer.invoke('backup:import'),
+    export:        () => ipcRenderer.invoke('backup:export'),
+    import:        () => ipcRenderer.invoke('backup:import'),
+    listAuto:      () => ipcRenderer.invoke('backup:listAuto'),
+    restoreAuto:   (name) => ipcRenderer.invoke('backup:restoreAuto', name),
+    openAutoFolder:() => ipcRenderer.invoke('backup:openAutoFolder'),
   },
   openDataFolder: () => ipcRenderer.invoke('app:openDataFolder'),
 });

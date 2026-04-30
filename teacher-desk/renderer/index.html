@@ -148,6 +148,22 @@
         </div>
         <p class="help" data-i18n="settings.dataHelp">All your notes &amp; tasks are stored only on this computer.</p>
 
+        <h3 data-i18n="settings.autoBackup">Automatic Backups</h3>
+        <p class="help" data-i18n="settings.autoBackupHelp">Teacher Desk automatically saves a snapshot of your notes &amp; tasks each day. The last 7 are kept.</p>
+        <div class="setting-row">
+          <label data-i18n="settings.autoBackupFolder">Backups folder</label>
+          <div class="backup-path-row">
+            <code id="autoBackupPath" class="backup-path">—</code>
+            <button id="openBackupsBtn" class="ghost-btn small" data-i18n="settings.openFolder">Open folder</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <label data-i18n="settings.restoreAuto">Restore from backup…</label>
+          <div id="autoBackupList" class="auto-backup-list">
+            <p class="muted" data-i18n="settings.autoBackupEmpty">No automatic backups yet — one will be created the next time you open Teacher Desk.</p>
+          </div>
+        </div>
+
         <h3 data-i18n="settings.about">About</h3>
         <p class="muted">Teacher Desk v1.0 — offline productivity for online teachers.</p>
       </div>

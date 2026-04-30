@@ -56,6 +56,12 @@ export async function initSettings() {
   });
   document.getElementById('dataFolderBtn').addEventListener('click', () => storage.openDataFolder());
 
+  document.getElementById('openBackupsBtn').addEventListener('click', async () => {
+    await storage.backup.openAutoFolder();
+  });
+
+  await refreshAutoBackups();
+
   // Podium quick-toggle in toolbar
   document.getElementById('podiumToggle').addEventListener('click', async () => {
     const cb = document.getElementById('settingPodium');
@@ -92,4 +98,71 @@ export function showToast(msg) {
 
 export function refreshSettingsUI() {
   setPodiumUI(document.getElementById('settingPodium').checked);
+}
+
+async function refreshAutoBackups() {
+  const pathEl = document.getElementById('autoBackupPath');
+  const listEl = document.getElementById('autoBackupList');
+  if (!pathEl || !listEl) return;
+
+  if (!storage.isElectron) {
+    pathEl.textContent = t('settings.autoBackupWebOnly');
+    listEl.innerHTML = `<p class="muted">${t('settings.autoBackupWebOnly')}</p>`;
+    return;
+  }
+
+  let res = { ok: false, dir: '', files: [] };
+  try { res = await storage.backup.listAuto(); } catch {}
+
+  pathEl.textContent = res.dir || '—';
+
+  const files = (res && res.files) || [];
+  if (files.length === 0) {
+    listEl.innerHTML = `<p class="muted">${t('settings.autoBackupEmpty')}</p>`;
+    return;
+  }
+
+  listEl.innerHTML = '';
+  for (const f of files) {
+    const row = document.createElement('div');
+    row.className = 'auto-backup-item';
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const name = document.createElement('span');
+    name.className = 'name';
+    name.textContent = f.date || f.name;
+    const sub = document.createElement('span');
+    sub.className = 'sub';
+    sub.textContent = `${f.name} · ${formatBytes(f.size)}`;
+    meta.appendChild(name);
+    meta.appendChild(sub);
+
+    const btn = document.createElement('button');
+    btn.className = 'ghost-btn small';
+    btn.textContent = t('settings.restore');
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      const r = await storage.backup.restoreAuto(f.name);
+      if (r && r.ok) {
+        showToast(t('toast.imported'));
+        setTimeout(() => location.reload(), 800);
+      } else if (r && r.canceled) {
+        btn.disabled = false;
+      } else {
+        showToast((r && r.error) || t('toast.error'));
+        btn.disabled = false;
+      }
+    });
+
+    row.appendChild(meta);
+    row.appendChild(btn);
+    listEl.appendChild(row);
+  }
+}
+
+function formatBytes(n) {
+  if (!n || n < 1024) return `${n || 0} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
