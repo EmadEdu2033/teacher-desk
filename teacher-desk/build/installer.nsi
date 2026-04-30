@@ -31,6 +31,12 @@ SetCompressor /SOLID lzma
 ShowInstDetails show
 ShowUnInstDetails show
 
+; Installer + uninstaller .exe icon (the "green chalkboard with blue frame")
+Icon   "icon.ico"
+UninstallIcon "icon.ico"
+!define MUI_ICON   "icon.ico"
+!define MUI_UNICON "icon.ico"
+
 VIProductVersion "1.0.0.0"
 VIAddVersionKey "ProductName"     "${APP_NAME}"
 VIAddVersionKey "CompanyName"     "${APP_PUBLISHER}"

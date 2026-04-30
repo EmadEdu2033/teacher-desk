@@ -56,8 +56,7 @@
       "signAndEditExecutable": false,
       "publisherName": "Teacher Desk",
       "certificateFile": "build/cert.pfx",
-      "certificatePassword": "${env.WIN_CSC_KEY_PASSWORD}",
-      "_signing_note": "This block is consumed by scripts/sign.js (Linux-friendly osslsigncode). electron-builder itself does not sign here because signAndEditExecutable=false (Wine crashes in the Replit sandbox). Set the actual password via the WIN_CSC_KEY_PASSWORD env var; never put the literal password in this file."
+      "certificatePassword": "${env.WIN_CSC_KEY_PASSWORD}"
     },
     "nsis": {
       "oneClick": false,

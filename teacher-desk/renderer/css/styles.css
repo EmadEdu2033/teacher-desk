@@ -69,9 +69,63 @@ button { font-family: inherit; cursor: pointer; }
 }
 .topbar-left, .topbar-right { display: flex; align-items: center; gap: 12px; }
 
-.logo { display:flex; align-items:center; gap:8px; font-weight:700; }
-.logo-mark { font-size:18px; }
+.logo { display:flex; align-items:center; gap:10px; font-weight:700; }
+.logo-mark { display:inline-flex; line-height:0; }
+.logo-mark svg { display:block; border-radius:6px; box-shadow: 0 1px 2px rgba(0,0,0,0.18); }
 .logo-text { font-size:15px; }
+
+/* Theme toggle (sun / moon) */
+.theme-toggle {
+  width: 36px; height: 36px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--surface-2); color: var(--text);
+  border: 1px solid var(--border); transition: background 120ms ease, color 120ms ease;
+}
+.theme-toggle:hover { background: var(--border); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle .theme-icon-moon { display: none; }
+.theme-toggle .theme-icon-sun  { display: block; }
+[data-theme="dark"] .theme-toggle .theme-icon-sun  { display: none; }
+[data-theme="dark"] .theme-toggle .theme-icon-moon { display: block; color: #ffd966; }
+
+/* About card */
+.about-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 14px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-top: 6px;
+}
+.about-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  object-fit: cover; flex: 0 0 auto;
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.about-meta { display: flex; flex-direction: column; gap: 2px; }
+.about-name { font-weight: 700; font-size: 16px; color: var(--text); }
+.about-version { font-size: 12px; }
+
+/* Bottom-right credit footer */
+.credit-footer {
+  position: fixed; bottom: 8px; right: 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 8px 4px 4px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted); font-size: 11px; font-weight: 500;
+  pointer-events: none;
+  user-select: none;
+  z-index: 50;
+  backdrop-filter: blur(4px);
+}
+[data-theme="dark"] .credit-footer { background: rgba(255, 255, 255, 0.05); }
+[dir="rtl"] .credit-footer { right: auto; left: 12px; padding: 4px 4px 4px 8px; }
+.credit-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--accent);
+}
 
 .tabs { display: flex; gap: 4px; margin-inline-start: 12px; }
 .tab {

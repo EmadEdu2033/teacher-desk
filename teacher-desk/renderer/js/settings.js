@@ -68,6 +68,22 @@ export async function initSettings() {
     cb.checked = !cb.checked;
     cb.dispatchEvent(new Event('change'));
   });
+
+  // Theme quick-toggle in toolbar (sun ↔ moon).
+  // Always flips between explicit light and dark — never "system" — so a click
+  // gives a deterministic visible result.
+  const themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', async () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      await storage.settings.set('theme', next);
+      applyTheme(next);
+      // Keep the Settings dropdown in sync if it's already mounted.
+      const sel = document.getElementById('settingTheme');
+      if (sel) sel.value = next;
+    });
+  }
 }
 
 function applyTheme(mode) {

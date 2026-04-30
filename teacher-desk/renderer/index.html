@@ -11,7 +11,18 @@
   <header class="topbar">
     <div class="topbar-left">
       <div class="logo">
-        <span class="logo-mark">📌</span>
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="28" height="28">
+            <rect width="64" height="64" rx="12" ry="12" fill="#2563eb"/>
+            <rect x="7" y="11" width="50" height="34" rx="4" ry="4" fill="#1e7a4d" stroke="#16653f" stroke-width="0.6"/>
+            <rect x="12" y="17" width="22" height="3" rx="1.5" fill="#ffffff" opacity="0.95"/>
+            <rect x="12" y="23" width="32" height="2" rx="1"   fill="#ffffff" opacity="0.78"/>
+            <rect x="12" y="28" width="18" height="2" rx="1"   fill="#ffffff" opacity="0.65"/>
+            <rect x="12" y="33" width="26" height="2" rx="1"   fill="#ffffff" opacity="0.55"/>
+            <rect x="4"  y="45" width="56" height="6" rx="2" ry="2" fill="#1e3a8a"/>
+            <rect x="9"  y="46" width="9"  height="3" rx="1" fill="#ffffff"/>
+          </svg>
+        </span>
         <span class="logo-text" data-i18n="appName">Teacher Desk</span>
       </div>
       <nav class="tabs" role="tablist">
@@ -21,6 +32,26 @@
       </nav>
     </div>
     <div class="topbar-right">
+      <button id="themeToggle" class="theme-toggle" type="button"
+              data-i18n-attr="title:theme.toggle;aria-label:theme.toggle"
+              title="Toggle dark mode" aria-label="Toggle dark mode">
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="12" y1="2.5" x2="12" y2="5"/>
+            <line x1="12" y1="19" x2="12" y2="21.5"/>
+            <line x1="2.5" y1="12" x2="5" y2="12"/>
+            <line x1="19" y1="12" x2="21.5" y2="12"/>
+            <line x1="4.7" y1="4.7" x2="6.5" y2="6.5"/>
+            <line x1="17.5" y1="17.5" x2="19.3" y2="19.3"/>
+            <line x1="4.7" y1="19.3" x2="6.5" y2="17.5"/>
+            <line x1="17.5" y1="6.5" x2="19.3" y2="4.7"/>
+          </g>
+        </svg>
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path fill="currentColor" d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>
+        </svg>
+      </button>
       <button id="podiumToggle" class="podium-toggle" title="Podium mode">
         <span class="podium-icon" aria-hidden="true">👁</span>
         <span class="podium-label" data-i18n="podium.off">Podium: Off</span>
@@ -165,10 +196,22 @@
         </div>
 
         <h3 data-i18n="settings.about">About</h3>
-        <p class="muted">Teacher Desk v1.0 — offline productivity for online teachers.</p>
+        <div class="about-card">
+          <img class="about-avatar" src="./assets/coach-emad.jpg" alt="Coach Emad" />
+          <div class="about-meta">
+            <div class="about-name" data-i18n="about.coachName">Coach Emad</div>
+            <div class="about-version muted">Teacher Desk v1.0</div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
+
+  <!-- Footer credit (always visible, bottom corner) -->
+  <div id="creditFooter" class="credit-footer" aria-hidden="false">
+    <img class="credit-avatar" src="./assets/coach-emad.jpg" alt="" />
+    <span class="credit-text" data-i18n="credit.line">Created by Coach Emad</span>
+  </div>
 
   <!-- Task editor modal -->
   <div id="taskModal" class="modal hidden">
