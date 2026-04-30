@@ -1,7 +1,7 @@
 // Settings page logic
 
 import { storage } from './storage.js';
-import { setLang, t, applyDom } from './i18n.js';
+import { setLang, t, applyDom, getLang } from './i18n.js';
 
 let onLangChange = null;
 export function setLangChangeHandler(fn) { onLangChange = fn; }
@@ -149,16 +149,21 @@ export function showToast(msg) {
 
 export function refreshSettingsUI() {
   setPodiumUI(document.getElementById('settingPodium').checked);
+  // Re-render the Automatic Backups section so the "Last backup …" status
+  // line and the snapshot row labels pick up the newly active language.
+  refreshAutoBackups();
 }
 
 async function refreshAutoBackups() {
   const pathEl = document.getElementById('autoBackupPath');
   const listEl = document.getElementById('autoBackupList');
+  const statusEl = document.getElementById('autoBackupStatus');
   if (!pathEl || !listEl) return;
 
   if (!storage.isElectron) {
     pathEl.textContent = t('settings.autoBackupWebOnly');
     listEl.innerHTML = `<p class="muted">${t('settings.autoBackupWebOnly')}</p>`;
+    if (statusEl) { statusEl.classList.add('hidden'); statusEl.textContent = ''; statusEl.classList.remove('warn'); }
     return;
   }
 
@@ -168,6 +173,8 @@ async function refreshAutoBackups() {
   pathEl.textContent = res.dir || '—';
 
   const files = (res && res.files) || [];
+  renderBackupStatus(statusEl, files);
+
   if (files.length === 0) {
     listEl.innerHTML = `<p class="muted">${t('settings.autoBackupEmpty')}</p>`;
     return;
@@ -216,4 +223,81 @@ function formatBytes(n) {
   if (!n || n < 1024) return `${n || 0} B`;
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
   return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+const STALE_BACKUP_DAYS = 2;
+
+function renderBackupStatus(statusEl, files) {
+  if (!statusEl) return;
+  statusEl.classList.remove('warn');
+  if (!files || files.length === 0) {
+    // The list area already explains the empty state; keep the status row hidden.
+    statusEl.textContent = '';
+    statusEl.classList.add('hidden');
+    return;
+  }
+
+  const latest = pickLatestBackup(files);
+  const when = formatBackupWhen(latest);
+  const stale = backupAgeInDays(latest) > STALE_BACKUP_DAYS;
+
+  let text = t('settings.backupStatusLast').replace('{when}', when);
+  if (stale) {
+    text += ' ' + t('settings.backupStatusWarn');
+    statusEl.classList.add('warn');
+  }
+  statusEl.textContent = text;
+  statusEl.classList.remove('hidden');
+}
+
+function pickLatestBackup(files) {
+  return files.reduce((best, f) => {
+    const ft = backupTimestamp(f);
+    const bt = best ? backupTimestamp(best) : -Infinity;
+    return ft > bt ? f : best;
+  }, null);
+}
+
+function backupTimestamp(f) {
+  if (!f) return 0;
+  if (typeof f.mtime === 'number' && f.mtime > 0) return f.mtime;
+  if (f.date) {
+    const t = Date.parse(`${f.date}T00:00:00`);
+    return Number.isFinite(t) ? t : 0;
+  }
+  return 0;
+}
+
+function startOfDay(ts) {
+  const d = new Date(ts);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+function backupAgeInDays(file, now = Date.now()) {
+  const ts = backupTimestamp(file);
+  if (!ts) return Infinity;
+  const diff = startOfDay(now) - startOfDay(ts);
+  return Math.max(0, Math.round(diff / 86400000));
+}
+
+function formatBackupWhen(file, now = new Date()) {
+  const ts = backupTimestamp(file);
+  const locale = getLang() === 'ar' ? 'ar-EG' : 'en-US';
+  const time = ts
+    ? new Date(ts).toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' })
+    : '';
+  const days = backupAgeInDays(file, now.getTime());
+
+  if (days === 0) return t('settings.backupTimeToday').replace('{time}', time);
+  if (days === 1) return t('settings.backupTimeYesterday').replace('{time}', time);
+  if (days < 7) {
+    return t('settings.backupTimeDaysAgo')
+      .replace('{n}', String(days))
+      .replace('{time}', time);
+  }
+  const dateStr = ts
+    ? new Date(ts).toLocaleDateString(locale, { year: 'numeric', month: 'short', day: 'numeric' })
+    : (file && file.date) || '';
+  return t('settings.backupTimeOn').replace('{date}', dateStr).replace('{time}', time);
 }

@@ -451,6 +451,22 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--surface-2); border: 1px solid var(--border);
   font-size: 12px; color: var(--text); word-break: break-all;
 }
+.backup-status {
+  font-size: 13px; color: var(--text-muted);
+  margin: 0 0 8px;
+}
+.backup-status.warn {
+  color: #8a5a00;
+  background: #fff7e0;
+  border: 1px solid #f0d27a;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+[data-theme="dark"] .backup-status.warn {
+  color: #ffd166;
+  background: rgba(255, 209, 102, 0.08);
+  border-color: rgba(255, 209, 102, 0.35);
+}
 .auto-backup-list { display: flex; flex-direction: column; gap: 6px; }
 .auto-backup-item {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
