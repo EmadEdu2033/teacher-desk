@@ -38,8 +38,18 @@ function getInstallerInfo() {
   ) {
     return installerCache;
   }
+  // Guard against a race where the file is unlinked or replaced between
+  // statSync and readFileSync (e.g., a republish landing mid-request). On
+  // failure, fall back to the previous cached value if any so the page
+  // still renders something sensible instead of crashing the request.
+  let buf;
+  try {
+    buf = fs.readFileSync(INSTALLER_FILE);
+  } catch {
+    return installerCache;
+  }
   const hash = crypto.createHash('sha256');
-  hash.update(fs.readFileSync(INSTALLER_FILE));
+  hash.update(buf);
   installerCache = {
     size: stat.size,
     mtimeMs: stat.mtimeMs,
