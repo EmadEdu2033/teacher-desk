@@ -105,18 +105,76 @@ function commitsSince(tag) {
     .filter(Boolean);
 }
 
+// Conventional Commit prefix -> changelog section name.
+// Anything not in this map (or commits with no recognized prefix) lands in "Other".
+const COMMIT_TYPE_TO_SECTION = {
+  feat: 'Added',
+  feature: 'Added',
+  fix: 'Fixed',
+  bugfix: 'Fixed',
+  chore: 'Changed',
+  refactor: 'Changed',
+  perf: 'Changed',
+  style: 'Changed',
+  docs: 'Changed',
+  test: 'Changed',
+  build: 'Changed',
+  ci: 'Changed',
+  revert: 'Changed',
+};
+
+// Order the sub-sections appear under each version heading.
+const SECTION_ORDER = ['Added', 'Fixed', 'Changed', 'Other'];
+
+function classifyCommit(line) {
+  // Each line looks like: "<sha> <subject>". Pull the subject out so we can
+  // inspect its Conventional Commit prefix (e.g. "feat:", "fix(scope):").
+  const m = /^([0-9a-f]{7,})\s+(.*)$/.exec(line);
+  if (!m) return { section: 'Other', sha: '', subject: line };
+  let sha = m[1];
+  let subject = m[2];
+
+  // Drop legacy "Teacher Desk: " prefixes so bullets read clean.
+  subject = subject.replace(/^Teacher Desk:\s*/i, '');
+
+  // Conventional Commit format: type(scope)?!?: subject
+  const cc = /^([a-zA-Z]+)(?:\(([^)]+)\))?(!)?:\s*(.+)$/.exec(subject);
+  if (!cc) return { section: 'Other', sha, subject };
+  const type = cc[1].toLowerCase();
+  const scope = cc[2] || '';
+  const breaking = !!cc[3];
+  const rest = cc[4];
+  const section = COMMIT_TYPE_TO_SECTION[type] || 'Other';
+  // Re-render the bullet without the "type:" prefix but keep scope/breaking
+  // signals so the reader still gets the useful context.
+  const scopePart = scope ? `**${scope}:** ` : '';
+  const breakingPart = breaking ? '**BREAKING:** ' : '';
+  const cleanedSubject = `${breakingPart}${scopePart}${rest}`;
+  return { section, sha, subject: cleanedSubject };
+}
+
 function renderChangelogEntry(version, commits) {
   const date = new Date().toISOString().slice(0, 10);
   const header = `## [${version}] - ${date}\n`;
   if (commits.length === 0) {
     return `${header}\n- No teacher-desk changes recorded since the previous tag.\n`;
   }
-  const body = commits.map(line => {
-    // Drop "Teacher Desk: " prefixes in old commit messages so bullets read clean.
-    const cleaned = line.replace(/^([0-9a-f]{7,}) (?:Teacher Desk:\s*)?/i, '$1 ');
-    return `- ${cleaned}`;
-  }).join('\n');
-  return `${header}\n${body}\n`;
+
+  // Bucket commits by section, preserving original (newest-first) order within each.
+  const buckets = {};
+  for (const line of commits) {
+    const { section, sha, subject } = classifyCommit(line);
+    if (!buckets[section]) buckets[section] = [];
+    const bullet = sha ? `- ${sha} ${subject}` : `- ${subject}`;
+    buckets[section].push(bullet);
+  }
+
+  const parts = [];
+  for (const section of SECTION_ORDER) {
+    if (!buckets[section] || buckets[section].length === 0) continue;
+    parts.push(`### ${section}\n${buckets[section].join('\n')}\n`);
+  }
+  return `${header}\n${parts.join('\n')}`;
 }
 
 function prependChangelog(entry) {

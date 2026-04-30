@@ -75,7 +75,7 @@ WIN_CSC_KEY_PASSWORD=<your-pfx-password> npm run release -- patch
 `npm run release` is a one-shot wrapper around the steps above. It will:
 
 1. Bump the `version` field in `teacher-desk/package.json` (`patch`, `minor`, `major`, or an explicit `X.Y.Z`).
-2. Read commits in `teacher-desk/` since the previous `v*` tag and prepend a new dated section to `CHANGELOG.md`.
+2. Read commits in `teacher-desk/` since the previous `v*` tag and prepend a new dated section to `CHANGELOG.md`, grouped by commit type (see [Commit message convention](#commit-message-convention) below).
 3. Run `npm run build:win`, which bakes the new version into `TeacherDeskSetup.exe` (right-click → *Properties → Details → File version* will match `package.json`) and signs both binaries.
 4. Commit the version bump + changelog and create an annotated git tag like `v1.0.1`. Push with `git push && git push --tags`.
 
@@ -87,6 +87,38 @@ Useful flags:
 - `--yes` / `-y` — skip the interactive confirmation prompt.
 
 If the build is **not** skipped, either `WIN_CSC_KEY_PASSWORD` must be set or `TEACHER_DESK_SKIP_SIGN=1` must be exported (for unsigned dev builds).
+
+### Commit message convention
+
+`scripts/release.js` groups bullets in `CHANGELOG.md` by commit type, using the
+[Conventional Commits](https://www.conventionalcommits.org/) prefix on each
+commit's subject line. Use one of these prefixes when committing changes inside
+`teacher-desk/`:
+
+| Prefix                                                          | Changelog section |
+| --------------------------------------------------------------- | ----------------- |
+| `feat:` / `feature:`                                            | **Added**         |
+| `fix:` / `bugfix:`                                              | **Fixed**         |
+| `chore:`, `refactor:`, `perf:`, `style:`, `docs:`, `test:`, `build:`, `ci:`, `revert:` | **Changed** |
+| (anything else, or no prefix)                                   | **Other**         |
+
+A scope is optional and is preserved in the rendered bullet, e.g.
+`feat(notes): add color picker` → `**notes:** add color picker` under **Added**.
+Append `!` after the type/scope (e.g. `feat!:` or `refactor(api)!:`) to mark a
+breaking change — the bullet will be prefixed with **BREAKING:**.
+
+Examples:
+
+```
+feat: add reminders to the task manager
+fix(notes): stop sticky notes from drifting after window resize
+chore: bump electron to 30.x
+docs: clarify code-signing instructions
+```
+
+Commits without a recognized prefix still show up — they just land in the
+**Other** bucket. Existing flat entries in `CHANGELOG.md` are left untouched;
+only new release sections use the grouped format.
 
 ## Code-signing (removes the Windows SmartScreen "Unknown publisher" warning)
 
