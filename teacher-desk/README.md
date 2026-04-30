@@ -12,12 +12,32 @@ Offline desktop productivity app for online teachers.
 ## For end users (Windows)
 
 1. Download **`TeacherDeskSetup.exe`**.
-2. Double-click it. Click *Yes* on the Windows security prompt.
+2. Double-click it. Windows' User Account Control prompt will appear showing
+   **Verified publisher: Teacher Desk** (in blue, not the orange "Unknown
+   publisher" warning). Click *Yes* to continue.
 3. The setup wizard appears — choose where to install (or accept the default), then click **Install**.
 4. When it finishes, click **Finish**. Teacher Desk starts and a shortcut is created on the Desktop and Start Menu.
 5. To uninstall later: Windows *Settings → Apps → Teacher Desk → Uninstall*.
 
 No Python, no Node, no manual extraction — a real Windows installer.
+
+### How do I know this is safe?
+
+`TeacherDeskSetup.exe` (and the `Teacher Desk.exe` it installs) are digitally
+signed with a code-signing certificate issued to **Teacher Desk**. You can
+verify the signature yourself before running it:
+
+1. Right-click **`TeacherDeskSetup.exe`** → **Properties**.
+2. Open the **Digital Signatures** tab. You should see one entry, *Teacher
+   Desk*, with a timestamp.
+3. Select that row → **Details**. The dialog should report
+   *"This digital signature is OK"* and list the issuing certificate authority.
+4. Click **View Certificate** to see the full certificate chain up to a
+   trusted root CA.
+
+If the *Digital Signatures* tab is missing, or the signature shows as invalid,
+**do not run the installer** — the file has been tampered with or is a
+counterfeit. Re-download it from the official source.
 
 ## Run locally (developer)
 
