@@ -62,6 +62,7 @@ export async function initSettings() {
   });
 
   await refreshAutoBackups();
+  await refreshAboutVersion();
 
   // Podium quick-toggle in toolbar
   document.getElementById('podiumToggle').addEventListener('click', async () => {
@@ -152,6 +153,30 @@ export function refreshSettingsUI() {
   // Re-render the Automatic Backups section so the "Last backup …" status
   // line and the snapshot row labels pick up the newly active language.
   refreshAutoBackups();
+  refreshAboutVersion();
+}
+
+let cachedAppVersion = null;
+
+async function refreshAboutVersion() {
+  const el = document.getElementById('aboutVersion');
+  if (!el) return;
+  if (cachedAppVersion == null) {
+    try {
+      cachedAppVersion = (await storage.getVersion()) || '';
+    } catch {
+      cachedAppVersion = '';
+    }
+  }
+  if (cachedAppVersion) {
+    // Once we have the real version, drop the loading placeholder key so the
+    // i18n DOM walker doesn't overwrite our text on language switches.
+    el.removeAttribute('data-i18n');
+    el.textContent = t('about.version').replace('{version}', cachedAppVersion);
+  } else {
+    el.setAttribute('data-i18n', 'about.versionLoading');
+    el.textContent = t('about.versionLoading');
+  }
 }
 
 async function refreshAutoBackups() {

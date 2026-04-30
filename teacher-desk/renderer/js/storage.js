@@ -138,6 +138,7 @@ const web = {
     async openAutoFolder() { alert('Backups folder is only available in the installed Windows app.'); return { ok: false }; },
   },
   openDataFolder: async () => false,
+  getVersion: async () => null,
   isElectron: false,
 };
 
@@ -150,5 +151,6 @@ export const storage = isElectron ? {
   notify: window.td.notify,
   backup: window.td.backup,
   openDataFolder: window.td.openDataFolder,
+  getVersion: window.td.getVersion,
   isElectron: true,
 } : web;

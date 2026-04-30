@@ -480,6 +480,8 @@ ipcMain.handle('app:openDataFolder', () => {
   return true;
 });
 
+ipcMain.handle('app:getVersion', () => app.getVersion());
+
 ipcMain.handle('backup:listAuto', () => {
   try {
     const files = listAutoBackupFiles().map(f => ({

@@ -32,4 +32,5 @@ contextBridge.exposeInMainWorld('td', {
     openAutoFolder:() => ipcRenderer.invoke('backup:openAutoFolder'),
   },
   openDataFolder: () => ipcRenderer.invoke('app:openDataFolder'),
+  getVersion:     () => ipcRenderer.invoke('app:getVersion'),
 });
