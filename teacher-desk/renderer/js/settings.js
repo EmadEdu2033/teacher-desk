@@ -26,6 +26,7 @@ export async function initSettings() {
     const v = e.target.value;
     await storage.settings.set('language', v);
     setLang(v);
+    setLangToggleUI(v);
     if (onLangChange) onLangChange();
   });
   document.getElementById('settingTheme').addEventListener('change', async (e) => {
@@ -83,6 +84,40 @@ export async function initSettings() {
       const sel = document.getElementById('settingTheme');
       if (sel) sel.value = next;
     });
+  }
+
+  // Language quick-toggle in toolbar (EN ↔ AR).
+  // Mirrors the dark-mode toggle pattern: persists, swaps language, syncs the
+  // Settings dropdown, and refreshes the rest of the UI via onLangChange.
+  setLangToggleUI(lang);
+  const langBtn = document.getElementById('langToggle');
+  if (langBtn) {
+    langBtn.addEventListener('click', async () => {
+      const current = document.documentElement.getAttribute('lang') || 'en';
+      const next = current === 'ar' ? 'en' : 'ar';
+      await storage.settings.set('language', next);
+      setLang(next);
+      setLangToggleUI(next);
+      const sel = document.getElementById('settingLanguage');
+      if (sel) sel.value = next;
+      if (onLangChange) onLangChange();
+    });
+  }
+}
+
+// Show the OPPOSITE language on the button — i.e. what you'll switch TO.
+function setLangToggleUI(lang) {
+  const btn = document.getElementById('langToggle');
+  if (!btn) return;
+  const label = btn.querySelector('.lang-toggle-label');
+  if (lang === 'ar') {
+    if (label) label.textContent = t('lang.shortEn');
+    btn.title = t('lang.toggleToEn');
+    btn.setAttribute('aria-label', t('lang.toggleToEn'));
+  } else {
+    if (label) label.textContent = t('lang.shortAr');
+    btn.title = t('lang.toggleToAr');
+    btn.setAttribute('aria-label', t('lang.toggleToAr'));
   }
 }
 
