@@ -12,3 +12,9 @@ id = "TD-WIN-READMEFIRST"
 uri = "file://downloads/READ-ME-FIRST.txt"
 type = "text"
 title = "READ-ME-FIRST.txt — How to install Teacher Desk on Windows"
+
+[[outputs]]
+id = "ds6bzoSuCbK7t1yZZujGL"
+uri = "file://downloads/TeacherDeskSetup.tar.gz"
+type = "unspecified"
+title = "TeacherDeskSetup.tar.gz — contains TeacherDeskSetup.exe + READ-ME-FIRST.txt"
