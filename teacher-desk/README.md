@@ -45,6 +45,29 @@ Requires `makensis` and `osslsigncode` on `PATH`:
 
 > **Why we shell out to `makensis` directly:** `electron-builder`'s built-in NSIS target invokes `rcedit.exe` through Wine to embed the icon and version metadata into the installer stub. Wine crashes with "Bad system call" inside the Replit Linux sandbox, so we skip electron-builder's NSIS step entirely and call `makensis` ourselves with a hand-written `installer.nsi`. The end result is the same `TeacherDeskSetup.exe` an electron-builder NSIS run would produce, just without the icon-embed step.
 
+## Cut a new release
+
+```
+WIN_CSC_KEY_PASSWORD=<your-pfx-password> npm run release -- patch
+# or: minor, major, or an explicit version like 1.4.0
+```
+
+`npm run release` is a one-shot wrapper around the steps above. It will:
+
+1. Bump the `version` field in `teacher-desk/package.json` (`patch`, `minor`, `major`, or an explicit `X.Y.Z`).
+2. Read commits in `teacher-desk/` since the previous `v*` tag and prepend a new dated section to `CHANGELOG.md`.
+3. Run `npm run build:win`, which bakes the new version into `TeacherDeskSetup.exe` (right-click → *Properties → Details → File version* will match `package.json`) and signs both binaries.
+4. Commit the version bump + changelog and create an annotated git tag like `v1.0.1`. Push with `git push && git push --tags`.
+
+Useful flags:
+
+- `--dry-run` — print what would happen, change nothing.
+- `--no-build` — skip the Windows build (handy on machines without `makensis` / `osslsigncode`).
+- `--no-git` — bump and write the changelog but don't commit or tag.
+- `--yes` / `-y` — skip the interactive confirmation prompt.
+
+If the build is **not** skipped, either `WIN_CSC_KEY_PASSWORD` must be set or `TEACHER_DESK_SKIP_SIGN=1` must be exported (for unsigned dev builds).
+
 ## Code-signing (removes the Windows SmartScreen "Unknown publisher" warning)
 
 Both `Teacher Desk.exe` and `TeacherDeskSetup.exe` are signed during `build:win`

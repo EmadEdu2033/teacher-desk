@@ -15,6 +15,7 @@
     "sign:installer": "node scripts/sign.js dist/TeacherDeskSetup.exe",
     "cert:dev": "node scripts/generate-self-signed-cert.js",
     "build:win": "npm run build:unpacked && npm run sign:exe && npm run build:installer && npm run sign:installer",
+    "release": "node scripts/release.js",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
