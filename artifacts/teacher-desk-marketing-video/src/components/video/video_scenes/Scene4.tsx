@@ -68,7 +68,7 @@ export function Scene4() {
       </div>
 
       <div className="flex-1 relative flex p-8 gap-8">
-        {/* Teacher's View (Left side in RTL so it's visually Right, but let's do flex-row naturally RTL) */}
+        {/* Teacher's view */}
         <motion.div 
           className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 relative overflow-hidden"
           animate={phase >= 2 ? { width: "50%", flex: "none" } : { flex: 1 }}
