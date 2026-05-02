@@ -16,9 +16,9 @@ export function Scene1() {
   return (
     <motion.div 
       className="absolute inset-0 flex items-center justify-center bg-[var(--color-bg-dark)]"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.1 }}
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 1, zIndex: 1 }}
+      exit={{ opacity: 0, scale: 1.1, zIndex: 10 }}
       transition={{ duration: 0.6 }}
     >
       <div className="relative z-10 flex flex-col items-center">

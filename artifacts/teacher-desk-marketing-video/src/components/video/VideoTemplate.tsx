@@ -32,21 +32,7 @@ export default function VideoTemplate() {
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center overflow-hidden" dir="rtl">
       <div className="relative w-full max-w-[177.78vh] aspect-video overflow-hidden bg-black">
-        {/*
-         * No `mode="wait"` here on purpose: `wait` makes Framer Motion fully
-         * unmount the outgoing scene before mounting the incoming one, which
-         * exposes the wrapper's bg-black for the duration of the outgoing
-         * exit + the incoming fade-in (~1.2s of black at every cut). With
-         * the default mode, exit and enter overlap, so the outgoing scene
-         * fades over the incoming one and the user sees a clean crossfade
-         * without any black flash. Each Scene*.tsx is `absolute inset-0`
-         * with an opaque backdrop, so layering them is safe.
-         *
-         * `initial={false}` is kept so the very first scene on first page
-         * load does NOT play its enter animation (it just appears) — the
-         * loop boundary still triggers Scene1's enter animation because
-         * Scene1 then mounts as a *new* AnimatePresence child.
-         */}
+        {/* Default mode (no `mode="wait"`) so outgoing/incoming scenes overlap and crossfade. */}
         <AnimatePresence initial={false}>
           {SceneComponent && <SceneComponent key={currentSceneKey} />}
         </AnimatePresence>

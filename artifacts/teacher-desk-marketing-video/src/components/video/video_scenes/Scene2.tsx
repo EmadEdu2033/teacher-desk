@@ -15,15 +15,17 @@ export function Scene2() {
   return (
     <motion.div 
       className="absolute inset-0 flex items-center justify-center bg-[var(--color-bg-cream)]"
-      // Backdrop snaps in opaque so the wrapper's bg-black is never visible
-      // through the incoming scene during the crossfade from Scene1. The
-      // exit still fades, which is what produces the crossfade.
-      initial={{ opacity: 1, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 1.05 }}
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 1, zIndex: 1 }}
+      exit={{ opacity: 0, scale: 1.05, zIndex: 10 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="text-[4.5vw] font-bold text-[var(--color-primary)] flex items-center gap-4">
+      <motion.div
+        className="text-[4.5vw] font-bold text-[var(--color-primary)] flex items-center gap-4"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <span>مكتب المعلم —</span>
         <div className="relative h-[6vw] overflow-hidden min-w-[20vw]">
           <AnimatePresence mode="popLayout">
@@ -39,7 +41,7 @@ export function Scene2() {
             </motion.span>
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
       
       {/* Decorative background shapes */}
       <motion.div 

@@ -16,12 +16,9 @@ export function Scene4() {
   return (
     <motion.div 
       className="absolute inset-0 bg-[#F1F5F9] overflow-hidden flex flex-col"
-      // Backdrop snaps in opaque so the wrapper's bg-black is never visible
-      // through the incoming scene during the crossfade from Scene3. Exit
-      // fade-out is what powers the crossfade out to Scene5.
       initial={{ opacity: 1 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.05 }}
+      animate={{ opacity: 1, zIndex: 1 }}
+      exit={{ opacity: 0, scale: 1.05, zIndex: 10 }}
       transition={{ duration: 0.6 }}
     >
       {/* App Topbar - Recreated */}
