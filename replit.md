@@ -104,6 +104,31 @@ video-js artifact. Lives at `artifacts/teacher-desk-marketing-video/`.
 - **Out of scope**: audio/voice-over (video-js is silent by design), real
   screen recording of the signed `.exe` (Wine is blocked in the sandbox).
 
+## Deployment
+
+**The deployment has exactly one publishable artifact: `teacher-desk-landing`.**
+That artifact's Node server (`teacher-desk/scripts/preview-server.js`)
+serves both the download landing page at `/` and the marketing-video
+Vite bundle at `/teacher-desk-marketing-video/*` from
+`artifacts/teacher-desk-marketing-video/dist/public/`. Its production
+build step in `artifacts/teacher-desk-landing/.replit-artifact/artifact.toml`
+builds the video bundle first, then starts the server.
+
+The `teacher-desk-marketing-video` artifact intentionally has **no
+`[services.production]` block**. It exists only as a dev convenience so
+the video is independently previewable inside the Replit workspace
+during development. Re-adding `[services.production]` would re-list it
+in Replit's publish dialog as a separately publishable unit, and a user
+clicking Publish on the video card would deploy "the video alone" with
+no landing — exactly the bug the user hit on the custom domain
+`teacher-desk.coachemad.me`.
+
+To publish: click **Publish** in the Replit Deployments tab. The dialog
+will show the landing artifact only; deploying it picks up the embedded
+video automatically. The `dist/teacher-desk-landing.zip` produced by
+`pnpm export:landing` is a separate offline-distribution bundle (for
+file:// or any static host) and is not used by the live deployment.
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces

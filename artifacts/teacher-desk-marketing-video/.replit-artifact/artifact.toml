@@ -3,7 +3,6 @@ previewPath = "/teacher-desk-marketing-video/"
 title = "Teacher Desk — فيديو ترويجي"
 version = "1.0.0"
 id = "artifacts/teacher-desk-marketing-video"
-router = "path"
 
 [[integratedSkills]]
 name = "video-js"
@@ -14,17 +13,15 @@ name = "web"
 paths = [ "/teacher-desk-marketing-video/" ]
 localPort = 25120
 
+# Dev-only artifact. Production deployment is handled by the
+# teacher-desk-landing artifact, which serves this video bundle from its
+# Node server at /teacher-desk-marketing-video/*. We deliberately do NOT
+# define [services.production] here — that block would re-list this
+# artifact in Replit's publish dialog as a separately publishable unit
+# and the user could (and did) accidentally publish "the video alone",
+# leaving the landing unreachable on the custom domain.
 [services.development]
 run = "pnpm --filter @workspace/teacher-desk-marketing-video run dev"
-
-[services.production]
-build = [ "pnpm", "--filter", "@workspace/teacher-desk-marketing-video", "run", "build" ]
-publicDir = "artifacts/teacher-desk-marketing-video/dist/public"
-serve = "static"
-
-[[services.production.rewrites]]
-from = "/*"
-to = "/index.html"
 
 [services.env]
 PORT = "25120"

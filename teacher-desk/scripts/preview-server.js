@@ -18,12 +18,58 @@ const {
 const ROOT = path.join(__dirname, '..', 'renderer');
 const PORT = parseInt(process.env.PORT || '5000', 10);
 
+// Path to the marketing-video Vite build output. The landing server mounts
+// it at /teacher-desk-marketing-video/* so a single deployable artifact
+// (this one) serves both the landing page AND the embedded promo video.
+//
+// Why this matters: Replit's publish flow lists every artifact that has
+// [services.production] in its artifact.toml as a separately publishable
+// unit. When the marketing-video artifact had its own [services.production]
+// block, the publish dialog defaulted to "publish the video alone" and the
+// custom domain wound up serving only the video — never the landing. By
+// having the landing serve the video files itself, the marketing-video
+// artifact becomes a dev/preview-only convenience and the deployment has
+// exactly one artifact to publish, eliminating the misconfiguration class.
+const VIDEO_DIST = path.resolve(
+  __dirname, '..', '..',
+  'artifacts', 'teacher-desk-marketing-video', 'dist', 'public',
+);
+const VIDEO_PREFIX = '/teacher-desk-marketing-video/';
+
 // Returns true iff `candidate` is the same as `parent` or strictly inside it.
 // Uses path.relative so we are not fooled by sibling directories sharing a
 // prefix (e.g., `/srv/downloads` vs `/srv/downloads-evil`).
 function isInside(parent, candidate) {
   const rel = path.relative(parent, candidate);
   return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+}
+
+// Stream a single file from the marketing-video Vite bundle. Used by the
+// /teacher-desk-marketing-video/* mount above. Path-traversal-safe via
+// isInside on VIDEO_DIST.
+function serveVideoFile(rel, res) {
+  const filePath = path.resolve(VIDEO_DIST, '.' + path.posix.normalize('/' + rel));
+  if (!isInside(VIDEO_DIST, filePath)) { res.writeHead(403); res.end('Forbidden'); return; }
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(
+        'Marketing-video bundle not found at ' + VIDEO_DIST + '\n' +
+        'Run: pnpm --filter @workspace/teacher-desk-marketing-video run build',
+      );
+      return;
+    }
+    const ext = path.extname(filePath).toLowerCase();
+    res.setHeader('Content-Type', TYPES[ext] || 'application/octet-stream');
+    // Long cache for hashed asset bundles, short cache for index.html so a
+    // republish picks up the new entry script immediately.
+    res.setHeader(
+      'Cache-Control',
+      ext === '.html' ? 'no-store' : 'public, max-age=31536000, immutable',
+    );
+    res.writeHead(200);
+    res.end(data);
+  });
 }
 
 const TYPES = {
@@ -54,6 +100,32 @@ const server = http.createServer((req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     res.writeHead(200);
     res.end(renderDownloadPage());
+    return;
+  }
+
+  // Marketing-video Vite bundle, mounted at /teacher-desk-marketing-video/*.
+  // Serves the static build from artifacts/teacher-desk-marketing-video/
+  // dist/public so this single artifact is everything the deployment needs.
+  // Falls through to a 404 (with a helpful message) if the bundle is
+  // missing — that means the production build step did not run, which is
+  // the kind of failure we want surfaced loudly instead of silently
+  // showing a blank iframe.
+  if (url === VIDEO_PREFIX || url === VIDEO_PREFIX.slice(0, -1)) {
+    // Trailing-slash redirect so relative asset URLs in index.html resolve
+    // against the right base. Browsers do this automatically for
+    // directory-style URLs only when the server returns a 301/302; our
+    // hand-rolled handler must do it explicitly.
+    if (url === VIDEO_PREFIX.slice(0, -1)) {
+      res.writeHead(301, { Location: VIDEO_PREFIX });
+      res.end();
+      return;
+    }
+    serveVideoFile('index.html', res);
+    return;
+  }
+  if (url.startsWith(VIDEO_PREFIX)) {
+    const rel = url.slice(VIDEO_PREFIX.length) || 'index.html';
+    serveVideoFile(rel, res);
     return;
   }
 

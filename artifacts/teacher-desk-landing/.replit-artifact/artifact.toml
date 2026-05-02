@@ -14,8 +14,22 @@ run = "pnpm --filter @workspace/teacher-desk-landing run dev"
 
 [services.production]
 
+# Build the marketing-video Vite bundle so the landing server can serve it
+# at /teacher-desk-marketing-video/* in production. This is the ONLY
+# artifact in the deployment with a [services.production] block on purpose:
+# the landing is the single deployable unit and bundles the embedded promo
+# video itself, so the publish dialog can no longer default to publishing
+# only the video.
+#
+# BASE_PATH must match the URL prefix preview-server.js mounts the bundle
+# at (/teacher-desk-marketing-video/) — without it Vite emits root-relative
+# asset URLs ("/assets/...") that the landing server does NOT serve, and
+# the embedded iframe loads HTML but no JS/CSS, leaving a black video.
 [services.production.build]
-args = ["true"]
+args = ["pnpm", "--filter", "@workspace/teacher-desk-marketing-video", "run", "build"]
+
+[services.production.build.env]
+BASE_PATH = "/teacher-desk-marketing-video/"
 
 [services.production.run]
 args = ["node", "artifacts/teacher-desk-landing/src/server.js"]
