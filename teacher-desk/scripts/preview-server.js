@@ -149,6 +149,15 @@ function renderDownloadPage() {
       missingInstaller: 'The installer file is not currently available on the server. Please come back in a moment.',
       footerCredit: 'Created by Coach Emad',
       footerVersion: 'Teacher Desk v1.0',
+      featuresLabel: 'Features',
+      mockS1Title: 'Lesson 12',
+      mockS1Body:  'Past simple — examples',
+      mockS2Title: 'Reminder',
+      mockS2Body:  "Mark Sara's homework",
+      mockS3Title: 'Podium',
+      mockS3Body:  'Hide screen during meet',
+      mockS4Title: 'Tasks',
+      mockS4Body:  '3 due today',
     },
     ar: {
       htmlLang: 'ar',
@@ -179,6 +188,15 @@ function renderDownloadPage() {
       missingInstaller: 'ملف التثبيت غير متوفر حالياً على الخادم. تفضّل بالعودة بعد قليل.',
       footerCredit: 'مقدم من Coach Emad',
       footerVersion: 'مكتب المعلم — الإصدار 1.0',
+      featuresLabel: 'المميّزات',
+      mockS1Title: 'الحصة ١٢',
+      mockS1Body:  'الزمن الماضي البسيط — أمثلة',
+      mockS2Title: 'تذكير',
+      mockS2Body:  'تصحيح واجب سارة',
+      mockS3Title: 'وضع المنصة',
+      mockS3Body:  'إخفاء الشاشة أثناء الميت',
+      mockS4Title: 'المهام',
+      mockS4Body:  '٣ مستحقة اليوم',
     },
   };
 
@@ -608,16 +626,16 @@ function renderDownloadPage() {
         </div>
         <div class="body">
           <div class="stickies">
-            <div class="sticky s1"><b>Lesson 12</b><span>Past simple — examples</span></div>
-            <div class="sticky s2"><b>Reminder</b><span>Mark Sara's homework</span></div>
-            <div class="sticky s3"><b>Podium</b><span>Hide screen during meet</span></div>
-            <div class="sticky s4"><b>Tasks</b><span>3 due today</span></div>
+            <div class="sticky s1"><b data-i18n="mockS1Title">Lesson 12</b><span data-i18n="mockS1Body">Past simple — examples</span></div>
+            <div class="sticky s2"><b data-i18n="mockS2Title">Reminder</b><span data-i18n="mockS2Body">Mark Sara's homework</span></div>
+            <div class="sticky s3"><b data-i18n="mockS3Title">Podium</b><span data-i18n="mockS3Body">Hide screen during meet</span></div>
+            <div class="sticky s4"><b data-i18n="mockS4Title">Tasks</b><span data-i18n="mockS4Body">3 due today</span></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="features" aria-label="Features">
+    <section class="features" data-i18n-attr="aria-label:featuresLabel" aria-label="Features">
       <div class="feature">
         <span class="icon" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
