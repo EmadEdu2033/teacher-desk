@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useVideoPlayer } from '@/lib/video';
 import { Scene1 } from './video_scenes/Scene1';
@@ -8,7 +7,7 @@ import { Scene4 } from './video_scenes/Scene4';
 import { Scene5 } from './video_scenes/Scene5';
 import { Scene6 } from './video_scenes/Scene6';
 
-export const SCENE_DURATIONS = {
+const SCENE_DURATIONS = {
   open: 4500,
   kinetic: 6000,
   notes: 8500,
@@ -26,23 +25,9 @@ const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
   close: Scene6,
 };
 
-export default function VideoTemplate({
-  durations = SCENE_DURATIONS,
-  loop = true,
-  onSceneChange,
-}: {
-  durations?: Record<string, number>;
-  loop?: boolean;
-  onSceneChange?: (sceneKey: string) => void;
-} = {}) {
-  const { currentSceneKey } = useVideoPlayer({ durations, loop });
-
-  useEffect(() => {
-    onSceneChange?.(currentSceneKey);
-  }, [currentSceneKey, onSceneChange]);
-
-  const baseSceneKey = currentSceneKey.replace(/_r[12]$/, '');
-  const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
+export default function VideoTemplate() {
+  const { currentSceneKey } = useVideoPlayer({ durations: SCENE_DURATIONS });
+  const SceneComponent = SCENE_COMPONENTS[currentSceneKey];
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black" dir="rtl">

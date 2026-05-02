@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Plus, Eye, LayoutTemplate, CheckSquare, Settings, Sun, MonitorPlay } from 'lucide-react';
 
 const NOTE_COLORS = ['#FEF08A', '#FCA5A5', '#86EFAC', '#93C5FD', '#F0ABFC'];
+
+const sceneVariants: Variants = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, y: -50, scale: 0.95, transition: { duration: 0.4 } },
+};
 
 export function Scene3() {
   const [phase, setPhase] = useState(0);
@@ -13,8 +19,9 @@ export function Scene3() {
       setTimeout(() => setPhase(2), 1300), // Color picker appears
       setTimeout(() => setPhase(3), 2400), // Yellow chosen, picker fades, note flies in
       setTimeout(() => setPhase(4), 3300), // Typing starts
-      setTimeout(() => setPhase(5), 5000), // Privacy beat: eye appears
+      setTimeout(() => setPhase(5), 5000), // Eye appears next to note
       setTimeout(() => setPhase(6), 5700), // Diagonal slash strikes through eye
+      setTimeout(() => setPhase(7), 6400), // Privacy caption fades in below
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
@@ -22,9 +29,10 @@ export function Scene3() {
   return (
     <motion.div
       className="absolute inset-0 bg-[var(--color-bg-light)] overflow-hidden flex flex-col"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, y: -50 }}
+      variants={sceneVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
       transition={{ duration: 0.6 }}
     >
       {/* App Topbar */}
@@ -106,83 +114,100 @@ export function Scene3() {
           )}
         </AnimatePresence>
 
-        {/* The Sticky Note */}
+        {/* The Sticky Note + adjacent privacy beat */}
         <AnimatePresence>
           {phase >= 3 && (
             <motion.div
-              key="note"
-              className="absolute top-24 right-8 w-[22vw] h-[22vw] bg-[#FEF08A] rounded-lg shadow-md p-6 border border-[#FDE047] flex flex-col"
-              initial={{ scale: 0, rotate: -8, opacity: 0, x: 80, y: -40 }}
-              animate={{ scale: 1, rotate: -2, opacity: 1, x: 0, y: 0 }}
+              key="note-group"
+              className="absolute top-24 right-8 flex items-start gap-4"
+              initial={{ scale: 0, opacity: 0, x: 80, y: -40 }}
+              animate={{ scale: 1, opacity: 1, x: 0, y: 0 }}
               transition={{ type: 'spring', stiffness: 220, damping: 18 }}
             >
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex gap-2">
-                  <div className="w-4 h-4 rounded-full bg-[#FCA5A5]" />
-                  <div className="w-4 h-4 rounded-full bg-[#86EFAC]" />
-                  <div className="w-4 h-4 rounded-full bg-[#93C5FD]" />
+              <motion.div
+                className="w-[22vw] h-[22vw] bg-[#FEF08A] rounded-lg shadow-md p-6 border border-[#FDE047] flex flex-col"
+                animate={{ rotate: -2 }}
+                initial={{ rotate: -8 }}
+                transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex gap-2">
+                    <div className="w-4 h-4 rounded-full bg-[#FCA5A5]" />
+                    <div className="w-4 h-4 rounded-full bg-[#86EFAC]" />
+                    <div className="w-4 h-4 rounded-full bg-[#93C5FD]" />
+                  </div>
+                  <div className="text-gray-500"><Settings size={16} /></div>
                 </div>
-                <div className="text-gray-500"><Settings size={16} /></div>
-              </div>
-              <div className="flex-1 text-[1.8vw] text-gray-800 leading-relaxed font-medium">
-                {phase >= 4 && (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1.2 }}
-                  >
-                    مراجعة أسئلة امتحان الرياضيات للصف الثالث...
-                  </motion.span>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <div className="flex-1 text-[1.8vw] text-gray-800 leading-relaxed font-medium">
+                  {phase >= 4 && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 1.2 }}
+                    >
+                      مراجعة أسئلة امتحان الرياضيات للصف الثالث...
+                    </motion.span>
+                  )}
+                </div>
+              </motion.div>
 
-        {/* Privacy Beat Overlay: eye appears, then diagonal slash strikes through */}
-        <AnimatePresence>
-          {phase >= 5 && (
-            <motion.div
-              key="privacy"
-              className="absolute bottom-12 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm px-8 py-4 rounded-2xl shadow-xl border border-gray-200 flex items-center gap-6"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            >
-              <div className="relative w-16 h-16 flex items-center justify-center">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.6 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.35, type: 'spring', stiffness: 240 }}
-                  className="text-[var(--color-primary-light)]"
-                >
-                  <Eye size={48} />
-                </motion.div>
-                {phase >= 6 && (
-                  <svg
-                    viewBox="0 0 64 64"
-                    className="absolute inset-0 w-16 h-16 pointer-events-none"
-                    aria-hidden="true"
+              {/* Privacy beat: eye + slash directly next to the note */}
+              <AnimatePresence>
+                {phase >= 5 && (
+                  <motion.div
+                    key="privacy-inline"
+                    className="flex flex-col items-center gap-3 mt-2"
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
                   >
-                    <motion.line
-                      x1="8"
-                      y1="56"
-                      x2="56"
-                      y2="8"
-                      stroke="#DC2626"
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 0.45, ease: 'easeOut' }}
-                    />
-                  </svg>
+                    <div className="relative w-20 h-20 flex items-center justify-center bg-white rounded-2xl shadow-lg border border-gray-200">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.6 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.35, type: 'spring', stiffness: 240 }}
+                        className="text-[var(--color-primary-light)]"
+                      >
+                        <Eye size={56} />
+                      </motion.div>
+                      {phase >= 6 && (
+                        <svg
+                          viewBox="0 0 80 80"
+                          className="absolute inset-0 w-20 h-20 pointer-events-none"
+                          aria-hidden="true"
+                        >
+                          <motion.line
+                            x1="12"
+                            y1="68"
+                            x2="68"
+                            y2="12"
+                            stroke="#DC2626"
+                            strokeWidth="7"
+                            strokeLinecap="round"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.45, ease: 'easeOut' }}
+                          />
+                        </svg>
+                      )}
+                    </div>
+                    <AnimatePresence>
+                      {phase >= 7 && (
+                        <motion.div
+                          key="privacy-caption"
+                          className="bg-white rounded-xl shadow-md border border-gray-200 px-4 py-2 text-center"
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          <div className="font-bold text-[var(--color-primary)] text-base whitespace-nowrap">ملاحظاتك خاصة بك</div>
+                          <div className="text-gray-600 text-sm whitespace-nowrap">لا أحد يراها أثناء مشاركة الشاشة</div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
                 )}
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-[var(--color-primary)] text-xl">ملاحظاتك خاصة بك</span>
-                <span className="text-gray-600 text-lg">لا أحد يراها، حتى أثناء مشاركة الشاشة.</span>
-              </div>
+              </AnimatePresence>
             </motion.div>
           )}
         </AnimatePresence>
