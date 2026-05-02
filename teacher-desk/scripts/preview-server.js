@@ -140,7 +140,7 @@ function renderDownloadPage() {
       featureOfflineBody: 'No account, no cloud, no tracking. Everything is stored locally.',
       ctaLabel: 'Download for Windows',
       ctaSize: sizeShort,
-      ctaReassurance: 'Verified publisher: Teacher Desk · Windows 10 / 11',
+      ctaReassurance: `Verified publisher: Teacher Desk · Windows 10 / 11 · ${sizeShort}`,
       installHint: 'After downloading, double-click the file. Windows will show <strong>Verified publisher: Teacher Desk</strong> in the install prompt — click <em>Yes</em>.',
       fingerprintHeading: 'File fingerprint',
       sizeLabel: 'Size',
@@ -170,7 +170,7 @@ function renderDownloadPage() {
       featureOfflineBody: 'بدون حساب، بدون سحابة، بدون تتبّع. كل شيء محفوظ محلياً.',
       ctaLabel: 'تنزيل لويندوز',
       ctaSize: sizeShort,
-      ctaReassurance: 'الناشر الموثّق: Teacher Desk · يعمل على Windows 10 / 11',
+      ctaReassurance: `الناشر الموثّق: Teacher Desk · يعمل على Windows 10 / 11 · ${sizeShort}`,
       installHint: 'بعد التنزيل، اضغط مرتين على الملف. سيُظهر ويندوز <strong>الناشر الموثّق: Teacher Desk</strong> في نافذة التثبيت — اضغط <em>نعم</em>.',
       fingerprintHeading: 'بصمة الملف',
       sizeLabel: 'الحجم',
@@ -755,7 +755,10 @@ const server = http.createServer((req, res) => {
   let url = decodeURIComponent((req.url || '/').split('?')[0]);
 
   // Friendly download landing page for the signed Windows installer.
-  if (url === '/download' || url === '/download/') {
+  // Both `/` and `/download` render the same page so a custom domain
+  // pointed at the root works without per-host code, and direct links to
+  // `/download` (the historical URL) keep working unchanged.
+  if (url === '/' || url === '' || url === '/download' || url === '/download/') {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
     res.writeHead(200);
