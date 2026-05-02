@@ -18,3 +18,9 @@ id = "ds6bzoSuCbK7t1yZZujGL"
 uri = "file://downloads/TeacherDeskSetup.tar.gz"
 type = "unspecified"
 title = "TeacherDeskSetup.tar.gz — contains TeacherDeskSetup.exe + READ-ME-FIRST.txt"
+
+[[outputs]]
+id = "yFNKMgEuQaRY9SQNr6e7B"
+uri = "file://dist/teacher-desk-landing.zip"
+type = "unspecified"
+title = "Teacher Desk landing page — deployable static bundle (84 MB)"
