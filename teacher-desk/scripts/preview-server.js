@@ -151,6 +151,11 @@ function renderDownloadPage() {
       footerCredit: 'Created by Coach Emad',
       footerVersion: 'Teacher Desk v1.0',
       featuresLabel: 'Features',
+      videoEyebrow: 'See it in action',
+      videoTitle: 'A 30-second tour of Teacher Desk',
+      videoLead: 'Sticky notes, tasks, and Podium mode — exactly the way they look on your computer.',
+      videoCaption: 'Silent preview · Loops automatically',
+      videoIframeTitle: 'Teacher Desk — 30-second product tour',
       mockS1Title: 'Lesson 12',
       mockS1Body:  'Past simple — examples',
       mockS2Title: 'Reminder',
@@ -190,6 +195,11 @@ function renderDownloadPage() {
       footerCredit: 'مقدم من Coach Emad',
       footerVersion: 'مكتب المعلم — الإصدار 1.0',
       featuresLabel: 'المميّزات',
+      videoEyebrow: 'شاهد البرنامج بنفسك',
+      videoTitle: 'جولة في ٣٠ ثانية داخل مكتب المعلم',
+      videoLead: 'الملاحظات اللاصقة، والمهام، ووضع المنصة — كما تظهر تماماً على جهازك.',
+      videoCaption: 'عرض صامت · يعيد نفسه تلقائياً',
+      videoIframeTitle: 'مكتب المعلم — جولة قصيرة في البرنامج',
       mockS1Title: 'الحصة ١٢',
       mockS1Body:  'الزمن الماضي البسيط — أمثلة',
       mockS2Title: 'تذكير',
@@ -212,7 +222,7 @@ function renderDownloadPage() {
   <title>${escapeHtml(i18n.en.docTitle)}</title>
   <link rel="icon" type="image/svg+xml" href="/assets/icon.svg" />
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;" />
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src 'self';" />
   <style>
     /* --- Alexandria — covers Latin + Arabic so the page feels like one family. */
     @font-face {
@@ -566,6 +576,95 @@ function renderDownloadPage() {
     [dir="rtl"] .sha { direction: ltr; text-align: left; unicode-bidi: embed; }
     [dir="rtl"] .feature h3, [dir="rtl"] .feature p { text-align: start; }
 
+    /* --- Video showcase section. */
+    .video-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      text-align: center;
+    }
+    .video-eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sky-500);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+    }
+    [dir="rtl"] .video-eyebrow { letter-spacing: 0.04em; text-transform: none; }
+    .video-section h2 {
+      margin: 0;
+      font-size: clamp(24px, 3.4vw, 36px);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text);
+      max-width: 720px;
+    }
+    .video-section .video-lead {
+      margin: 0;
+      max-width: 620px;
+      font-size: clamp(15px, 1.4vw, 17px);
+      color: var(--muted);
+    }
+    .video-frame {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+      margin-top: 8px;
+      border-radius: 22px;
+      padding: 10px;
+      background: linear-gradient(135deg, var(--navy-700) 0%, var(--sky-500) 50%, var(--navy-600) 100%);
+      box-shadow:
+        0 40px 80px -30px rgba(29, 78, 216, 0.45),
+        0 16px 32px -16px rgba(15, 23, 42, 0.3);
+    }
+    .video-frame::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.5), rgba(29, 78, 216, 0.4));
+      filter: blur(18px);
+      opacity: 0.6;
+      z-index: -1;
+    }
+    .video-frame .video-aspect {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--navy-900);
+    }
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .video-caption {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .video-caption::before {
+      content: "";
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--sky-400);
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+    }
+
     /* --- Responsive. */
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; }
@@ -634,6 +733,24 @@ function renderDownloadPage() {
           </div>
         </div>
       </div>
+    </section>
+
+    <section class="video-section" aria-labelledby="videoTitle">
+      <span class="video-eyebrow" data-i18n="videoEyebrow">See it in action</span>
+      <h2 id="videoTitle" data-i18n="videoTitle">A 30-second tour of Teacher Desk</h2>
+      <p class="video-lead" data-i18n="videoLead">Sticky notes, tasks, and Podium mode — exactly the way they look on your computer.</p>
+      <div class="video-frame">
+        <div class="video-aspect">
+          <iframe
+            src="/teacher-desk-marketing-video/"
+            data-i18n-attr="title:videoIframeTitle"
+            title="Teacher Desk — 30-second product tour"
+            loading="lazy"
+            allow="autoplay"
+            referrerpolicy="no-referrer"></iframe>
+        </div>
+      </div>
+      <p class="video-caption" data-i18n="videoCaption">Silent preview · Loops automatically</p>
     </section>
 
     <section class="features" data-i18n-attr="aria-label:featuresLabel" aria-label="Features">
