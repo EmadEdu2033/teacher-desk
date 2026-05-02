@@ -103,12 +103,13 @@ const TYPES = {
 function renderDownloadPage() {
   const info = getInstallerInfo();
 
-  // Live size for the CTA button label (e.g. "82.9 MB"). Falls back to a
+  // Live size for the CTA button label (e.g. "· 82.9 MB"). Falls back to a
   // placeholder if the file isn't on disk; the bilingual labels below
   // include their own translation keys for the surrounding text.
-  const sizeShort = info
+  const sizeRaw = info
     ? `${(info.size / 1024 / 1024).toFixed(1)} MB`
     : '—';
+  const sizeShort = info ? `· ${sizeRaw}` : sizeRaw;
 
   // Fingerprint values are inserted as raw strings (size + sha) — escapeHtml
   // is unnecessary because both come from a local trusted file, but we keep
@@ -140,7 +141,7 @@ function renderDownloadPage() {
       featureOfflineBody: 'No account, no cloud, no tracking. Everything is stored locally.',
       ctaLabel: 'Download for Windows',
       ctaSize: sizeShort,
-      ctaReassurance: `Verified publisher: Teacher Desk · Windows 10 / 11 · ${sizeShort}`,
+      ctaReassurance: `Verified publisher: Teacher Desk · Windows 10 / 11 · ${sizeRaw}`,
       installHint: 'After downloading, double-click the file. Windows will show <strong>Verified publisher: Teacher Desk</strong> in the install prompt — click <em>Yes</em>.',
       fingerprintHeading: 'File fingerprint',
       sizeLabel: 'Size',
@@ -179,7 +180,7 @@ function renderDownloadPage() {
       featureOfflineBody: 'بدون حساب، بدون سحابة، بدون تتبّع. كل شيء محفوظ محلياً.',
       ctaLabel: 'تنزيل لويندوز',
       ctaSize: sizeShort,
-      ctaReassurance: `الناشر الموثّق: Teacher Desk · يعمل على Windows 10 / 11 · ${sizeShort}`,
+      ctaReassurance: `الناشر الموثّق: Teacher Desk · يعمل على Windows 10 / 11 · ${sizeRaw}`,
       installHint: 'بعد التنزيل، اضغط مرتين على الملف. سيُظهر ويندوز <strong>الناشر الموثّق: Teacher Desk</strong> في نافذة التثبيت — اضغط <em>نعم</em>.',
       fingerprintHeading: 'بصمة الملف',
       sizeLabel: 'الحجم',
