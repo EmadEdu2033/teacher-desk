@@ -26,18 +26,20 @@ export function Scene6() {
           className="text-center"
         >
           <h2 className="text-[5vw] font-bold text-white font-latin tracking-tight mb-4">Coach Emad</h2>
-          <p className="text-[1.5vw] text-white/60 font-latin uppercase tracking-widest">Presented and created by Coach Emad</p>
+          <p className="text-[1.5vw] text-white/60 font-latin uppercase tracking-widest mb-6">Presented and created by Coach Emad</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+          className="flex items-center gap-3 mt-2"
+        >
+          <img src={`${import.meta.env.BASE_URL}brand/icon.svg`} alt="Teacher Desk" className="w-10 h-10" />
+          <span className="text-[2vw] font-bold text-white font-latin tracking-wide">Teacher Desk</span>
+          <span className="text-[1.5vw] text-white/70 font-bold mr-1">— مكتب المعلم</span>
         </motion.div>
       </div>
-
-      <motion.div 
-        className="absolute bottom-8 right-8 opacity-20"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.2, scale: 1 }}
-        transition={{ duration: 1, delay: 1 }}
-      >
-        <img src={`${import.meta.env.BASE_URL}brand/icon.svg`} alt="Mark" className="w-16 h-16 grayscale invert" />
-      </motion.div>
 
       {/* Decorative ambient light */}
       <motion.div 
