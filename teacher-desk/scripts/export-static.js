@@ -52,7 +52,10 @@ const STATIC_URLS = {
   coachUrl:     './assets/coach-emad.jpg',
   fontUrl:      './fonts/alexandria-arabic.woff2',
   installerUrl: './downloads/TeacherDeskSetup.exe',
-  videoUrl:     './teacher-desk-marketing-video/',
+  // Explicit index.html so the iframe loads under file:// too — browsers
+  // do not auto-resolve directory URLs to index.html when there is no
+  // HTTP server doing it for them.
+  videoUrl:     './teacher-desk-marketing-video/index.html',
 };
 
 function log(msg) {
