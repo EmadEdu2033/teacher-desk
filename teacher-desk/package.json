@@ -16,6 +16,7 @@
     "cert:dev": "node scripts/generate-self-signed-cert.js",
     "build:win": "npm run build:unpacked && npm run sign:exe && npm run build:installer && npm run sign:installer",
     "release": "node scripts/release.js",
+    "test": "node scripts/release.test.js",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {

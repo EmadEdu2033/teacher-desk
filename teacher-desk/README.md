@@ -122,6 +122,16 @@ Commits without a recognized prefix still show up — they just land in the
 **Other** bucket. Existing flat entries in `CHANGELOG.md` are left untouched;
 only new release sections use the grouped format.
 
+Each rendered bullet ends with the short commit hash in parentheses, e.g.
+`- add reminders (a1b2c3d)`, so individual changes stay traceable back to git
+without making the changelog read like raw `git log` output. Once the project
+repo is public, `renderChangelogEntry` in `scripts/release.js` is the single
+spot to swap the literal hash for a Markdown link to the commit URL.
+
+The bullet-formatting rules are covered by `scripts/release.test.js`. Run it
+with `node scripts/release.test.js` (or `npm test` from `teacher-desk/`) after
+touching `scripts/release.js`.
+
 ## Code-signing (removes the Windows SmartScreen "Unknown publisher" warning)
 
 Both `Teacher Desk.exe` and `TeacherDeskSetup.exe` are signed during `build:win`

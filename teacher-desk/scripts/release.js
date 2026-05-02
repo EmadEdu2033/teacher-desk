@@ -161,11 +161,14 @@ function renderChangelogEntry(version, commits) {
   }
 
   // Bucket commits by section, preserving original (newest-first) order within each.
+  // Trailing `(sha)` keeps the commit traceable without making the bullet read
+  // like raw `git log` output. If we ever publish the project repo we can swap
+  // the literal sha for a Markdown link to the commit URL here.
   const buckets = {};
   for (const line of commits) {
     const { section, sha, subject } = classifyCommit(line);
     if (!buckets[section]) buckets[section] = [];
-    const bullet = sha ? `- ${sha} ${subject}` : `- ${subject}`;
+    const bullet = sha ? `- ${subject} (${sha})` : `- ${subject}`;
     buckets[section].push(bullet);
   }
 
@@ -316,4 +319,15 @@ async function main() {
   console.log(`[release] Tagged ${tag}. Push with: git push && git push --tags`);
 }
 
-main().catch(err => die(err.stack || String(err)));
+// Only run the CLI when invoked directly. When required as a module
+// (e.g. from scripts/release.test.js) the helpers above are exposed
+// without firing the release flow.
+if (require.main === module) {
+  main().catch(err => die(err.stack || String(err)));
+}
+
+module.exports = {
+  classifyCommit,
+  renderChangelogEntry,
+  bumpVersion,
+};
