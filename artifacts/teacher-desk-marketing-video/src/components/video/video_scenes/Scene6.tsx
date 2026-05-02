@@ -26,20 +26,22 @@ export function Scene6() {
           className="text-center"
         >
           <h2 className="text-[5vw] font-bold text-white font-latin tracking-tight mb-4">Coach Emad</h2>
-          <p className="text-[1.5vw] text-white/60 font-latin uppercase tracking-widest mb-6">Presented and created by Coach Emad</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-          className="flex items-center gap-3 mt-2"
-        >
-          <img src={`${import.meta.env.BASE_URL}brand/icon.svg`} alt="Teacher Desk" className="w-10 h-10" />
-          <span className="text-[2vw] font-bold text-white font-latin tracking-wide">Teacher Desk</span>
-          <span className="text-[1.5vw] text-white/70 font-bold mr-1">— مكتب المعلم</span>
+          <p className="text-[1.5vw] text-white/70 font-latin tracking-wide">Presented and created by Coach Emad</p>
         </motion.div>
       </div>
+
+      <motion.div
+        className="absolute bottom-8 right-8 flex items-center gap-3"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 0.8, y: 0 }}
+        transition={{ duration: 1, delay: 1.0 }}
+      >
+        <img src={`${import.meta.env.BASE_URL}brand/icon.svg`} alt="Teacher Desk" className="w-8 h-8 opacity-90" />
+        <div className="flex flex-col leading-tight">
+          <span className="text-base font-bold text-white/90 font-latin tracking-wide">Teacher Desk</span>
+          <span className="text-sm text-white/60 font-bold">مكتب المعلم</span>
+        </div>
+      </motion.div>
 
       {/* Decorative ambient light */}
       <motion.div 
