@@ -77,7 +77,7 @@ video-js artifact. Lives at `artifacts/teacher-desk-marketing-video/`.
 - **Runtime**: React + Vite + Framer Motion (video-js scaffold)
 - **Length**: ~36s, 16:9, autoplay + loop, RTL, Alexandria font
 - **Scenes** (`src/components/video/video_scenes/Scene{1..6}.tsx`):
-  1. Open — chalkboard brand mark draws in over the word "للمعلم"
+  1. Open — chalkboard brand mark scales/rotates in over the word "للمعلم"
   2. Kinetic — vertical-roller carousel cycles "ملاحظات / مهام / منصة / تركيز"
   3. Notes — recreated topbar, "+ ملاحظة جديدة" click, yellow note types out, eye-with-strikethrough privacy beat
   4. Podium — split view: teacher sees notes, Zoom/Meet pane shows blackbox

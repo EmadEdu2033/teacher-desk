@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Plus, Eye, LayoutTemplate, CheckSquare, Settings, Sun, MonitorPlay } from 'lucide-react';
 
-const NOTE_COLORS = ['#FEF08A', '#FCA5A5', '#86EFAC', '#93C5FD', '#F0ABFC'];
+const NOTE_COLORS = ['#FEF08A', '#FCA5A5', '#86EFAC', '#93C5FD', '#F1F5F9'];
 
 const sceneVariants: Variants = {
   initial: { opacity: 0, scale: 0.95 },
