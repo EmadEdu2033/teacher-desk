@@ -467,6 +467,24 @@ button { font-family: inherit; cursor: pointer; }
   background: rgba(255, 209, 102, 0.08);
   border-color: rgba(255, 209, 102, 0.35);
 }
+.backup-status.error {
+  color: #8a1f1f;
+  background: #fde7e7;
+  border: 1px solid #f0a3a3;
+  padding: 10px 12px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+[data-theme="dark"] .backup-status.error {
+  color: #ff8a8a;
+  background: rgba(255, 80, 80, 0.10);
+  border-color: rgba(255, 120, 120, 0.40);
+}
+.backup-failure-title { font-size: 13px; }
+.backup-failure-detail { font-size: 13px; word-break: break-word; }
+.backup-failure-hint { font-size: 12px; opacity: 0.85; }
 .auto-backup-list { display: flex; flex-direction: column; gap: 6px; }
 .auto-backup-item {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;

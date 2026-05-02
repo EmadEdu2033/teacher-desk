@@ -156,8 +156,18 @@ function runAutoBackup() {
     }
     lastAutoBackupDate = stamp;
     rotateAutoBackups(AUTO_BACKUP_KEEP);
+    // A successful run clears any previously recorded failure so the
+    // renderer's warning banner disappears on the next refresh.
+    try { setSetting('lastBackupFailure', null); } catch {}
   } catch (err) {
-    console.warn('Auto-backup failed:', err && err.message ? err.message : err);
+    const reason = err && err.message ? String(err.message) : String(err);
+    console.warn('Auto-backup failed:', reason);
+    try {
+      setSetting('lastBackupFailure', {
+        at: Date.now(),
+        reason: reason.slice(0, 500),
+      });
+    } catch {}
   }
 }
 
@@ -490,6 +500,15 @@ ipcMain.handle('backup:listAuto', () => {
     return { ok: true, dir: backupsDir, files };
   } catch (e) {
     return { ok: false, error: e.message, dir: backupsDir, files: [] };
+  }
+});
+
+ipcMain.handle('backup:lastStatus', () => {
+  try {
+    const failure = getSetting('lastBackupFailure', null);
+    return { ok: true, lastFailure: failure || null };
+  } catch (e) {
+    return { ok: false, error: e.message, lastFailure: null };
   }
 });
 

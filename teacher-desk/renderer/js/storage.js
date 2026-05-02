@@ -134,6 +134,7 @@ const web = {
     async export() { alert('Backup is only available in the installed Windows app.'); return { ok: false }; },
     async import() { alert('Restore is only available in the installed Windows app.'); return { ok: false }; },
     async listAuto() { return { ok: true, dir: '', files: [] }; },
+    async lastStatus() { return { ok: true, lastFailure: null }; },
     async restoreAuto() { alert('Restore is only available in the installed Windows app.'); return { ok: false }; },
     async openAutoFolder() { alert('Backups folder is only available in the installed Windows app.'); return { ok: false }; },
   },

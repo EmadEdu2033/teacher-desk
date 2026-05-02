@@ -183,21 +183,32 @@ async function refreshAutoBackups() {
   const pathEl = document.getElementById('autoBackupPath');
   const listEl = document.getElementById('autoBackupList');
   const statusEl = document.getElementById('autoBackupStatus');
+  const failureEl = document.getElementById('autoBackupFailure');
   if (!pathEl || !listEl) return;
 
   if (!storage.isElectron) {
     pathEl.textContent = t('settings.autoBackupWebOnly');
     listEl.innerHTML = `<p class="muted">${t('settings.autoBackupWebOnly')}</p>`;
     if (statusEl) { statusEl.classList.add('hidden'); statusEl.textContent = ''; statusEl.classList.remove('warn'); }
+    if (failureEl) { failureEl.classList.add('hidden'); failureEl.textContent = ''; }
     return;
   }
 
   let res = { ok: false, dir: '', files: [] };
   try { res = await storage.backup.listAuto(); } catch {}
 
+  let lastFailure = null;
+  if (storage.backup.lastStatus) {
+    try {
+      const s = await storage.backup.lastStatus();
+      lastFailure = (s && s.lastFailure) || null;
+    } catch {}
+  }
+
   pathEl.textContent = res.dir || '—';
 
   const files = (res && res.files) || [];
+  renderBackupFailure(failureEl, lastFailure);
   renderBackupStatus(statusEl, files);
 
   if (files.length === 0) {
@@ -251,6 +262,40 @@ function formatBytes(n) {
 }
 
 const STALE_BACKUP_DAYS = 2;
+
+function renderBackupFailure(failureEl, lastFailure) {
+  if (!failureEl) return;
+  if (!lastFailure || !lastFailure.at) {
+    failureEl.classList.add('hidden');
+    failureEl.textContent = '';
+    return;
+  }
+
+  const when = formatBackupWhen({ mtime: lastFailure.at });
+  const reason = (lastFailure.reason && String(lastFailure.reason).trim())
+    || t('settings.backupFailedUnknownReason');
+
+  failureEl.innerHTML = '';
+
+  const title = document.createElement('strong');
+  title.className = 'backup-failure-title';
+  title.textContent = t('settings.backupFailedTitle');
+  failureEl.appendChild(title);
+
+  const detail = document.createElement('div');
+  detail.className = 'backup-failure-detail';
+  detail.textContent = t('settings.backupFailedDetail')
+    .replace('{when}', when)
+    .replace('{reason}', reason);
+  failureEl.appendChild(detail);
+
+  const hint = document.createElement('div');
+  hint.className = 'backup-failure-hint';
+  hint.textContent = t('settings.backupFailedHint');
+  failureEl.appendChild(hint);
+
+  failureEl.classList.remove('hidden');
+}
 
 function renderBackupStatus(statusEl, files) {
   if (!statusEl) return;
