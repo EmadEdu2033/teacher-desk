@@ -86,9 +86,9 @@ video-js artifact. Lives at `artifacts/teacher-desk-marketing-video/`.
 - **Brand assets** staged in `public/brand/` (coach-emad.jpg, icon.svg) and
   `src/assets/fonts/alexandria-arabic.woff2` (Vite-rewritten relative URL so
   the font loads under any base path).
-- **Scene controls** (`VideoWithControls.tsx` + `useSceneControls.ts`): jump
-  bar + scene-lock loop, only mounted inside the Replit preview iframe so the
-  exported video stays clean.
+- **Composition**: `VideoTemplate.tsx` renders the active scene inside a hard
+  16:9 aspect-ratio frame (no UI chrome, no preview controls) so the exported
+  video keeps its framing under any viewport size.
 - **Export**: standard video-js export pipeline (`bash scripts/validate-recording.sh`
   must pass; user records the looping preview into `.mp4`/`.webm`).
 - **Out of scope**: audio/voice-over (video-js is silent by design), real

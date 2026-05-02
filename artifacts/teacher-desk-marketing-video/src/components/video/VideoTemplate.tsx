@@ -30,10 +30,12 @@ export default function VideoTemplate() {
   const SceneComponent = SCENE_COMPONENTS[currentSceneKey];
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black" dir="rtl">
-      <AnimatePresence initial={false} mode="wait">
-        {SceneComponent && <SceneComponent key={currentSceneKey} />}
-      </AnimatePresence>
+    <div className="w-screen h-screen bg-black flex items-center justify-center overflow-hidden" dir="rtl">
+      <div className="relative w-full max-w-[177.78vh] aspect-video overflow-hidden bg-black">
+        <AnimatePresence initial={false} mode="wait">
+          {SceneComponent && <SceneComponent key={currentSceneKey} />}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
