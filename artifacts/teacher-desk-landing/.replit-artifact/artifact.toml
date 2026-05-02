@@ -7,7 +7,7 @@ id = "teacher-desk-landing"
 [[services]]
 localPort = 5000
 name = "web"
-paths = ["/"]
+paths = ["/", "/download"]
 
 [services.development]
 run = "pnpm --filter @workspace/teacher-desk-landing run dev"
