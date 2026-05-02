@@ -1,22 +1,26 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, EyeOff, LayoutTemplate, CheckSquare, Settings, Sun, MonitorPlay } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Eye, LayoutTemplate, CheckSquare, Settings, Sun, MonitorPlay } from 'lucide-react';
+
+const NOTE_COLORS = ['#FEF08A', '#FCA5A5', '#86EFAC', '#93C5FD', '#F0ABFC'];
 
 export function Scene3() {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 800),  // Click new note
-      setTimeout(() => setPhase(2), 1400), // Note appears
-      setTimeout(() => setPhase(3), 2200), // Typing starts
-      setTimeout(() => setPhase(4), 3800), // Privacy beat shows up
+      setTimeout(() => setPhase(1), 700),  // Click "new note"
+      setTimeout(() => setPhase(2), 1300), // Color picker appears
+      setTimeout(() => setPhase(3), 2400), // Yellow chosen, picker fades, note flies in
+      setTimeout(() => setPhase(4), 3300), // Typing starts
+      setTimeout(() => setPhase(5), 5000), // Privacy beat: eye appears
+      setTimeout(() => setPhase(6), 5700), // Diagonal slash strikes through eye
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
   return (
-    <motion.div 
+    <motion.div
       className="absolute inset-0 bg-[var(--color-bg-light)] overflow-hidden flex flex-col"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -64,9 +68,9 @@ export function Scene3() {
       {/* Main Content Area */}
       <div className="flex-1 bg-[#F1F5F9] relative p-8">
         {/* New Note Button */}
-        <motion.div 
+        <motion.div
           className="absolute top-8 right-8"
-          animate={phase === 1 ? { scale: 0.9, backgroundColor: "#E2E8F0" } : { scale: 1, backgroundColor: "#FFFFFF" }}
+          animate={phase === 1 ? { scale: 0.92 } : { scale: 1 }}
           transition={{ duration: 0.2 }}
         >
           <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border border-gray-200 text-[var(--color-primary)] font-semibold cursor-pointer">
@@ -75,14 +79,42 @@ export function Scene3() {
           </div>
         </motion.div>
 
+        {/* Color picker popover (brief) */}
+        <AnimatePresence>
+          {phase === 2 && (
+            <motion.div
+              key="color-picker"
+              className="absolute top-24 right-8 bg-white rounded-xl shadow-2xl border border-gray-200 p-3 flex gap-2 z-30"
+              initial={{ opacity: 0, y: -8, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.95, transition: { duration: 0.25 } }}
+              transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+            >
+              {NOTE_COLORS.map((c, i) => (
+                <motion.div
+                  key={c}
+                  className="w-10 h-10 rounded-md border-2"
+                  style={{
+                    backgroundColor: c,
+                    borderColor: i === 0 ? 'var(--color-primary-light)' : 'transparent',
+                  }}
+                  animate={i === 0 ? { scale: [1, 1.15, 1] } : {}}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* The Sticky Note */}
         <AnimatePresence>
-          {phase >= 2 && (
+          {phase >= 3 && (
             <motion.div
+              key="note"
               className="absolute top-24 right-8 w-[22vw] h-[22vw] bg-[#FEF08A] rounded-lg shadow-md p-6 border border-[#FDE047] flex flex-col"
-              initial={{ scale: 0, rotate: -5, opacity: 0 }}
-              animate={{ scale: 1, rotate: -2, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 250, damping: 20 }}
+              initial={{ scale: 0, rotate: -8, opacity: 0, x: 80, y: -40 }}
+              animate={{ scale: 1, rotate: -2, opacity: 1, x: 0, y: 0 }}
+              transition={{ type: 'spring', stiffness: 220, damping: 18 }}
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex gap-2">
@@ -90,14 +122,14 @@ export function Scene3() {
                   <div className="w-4 h-4 rounded-full bg-[#86EFAC]" />
                   <div className="w-4 h-4 rounded-full bg-[#93C5FD]" />
                 </div>
-                <div className="text-gray-500"><Settings size={16}/></div>
+                <div className="text-gray-500"><Settings size={16} /></div>
               </div>
               <div className="flex-1 text-[1.8vw] text-gray-800 leading-relaxed font-medium">
-                {phase >= 3 && (
+                {phase >= 4 && (
                   <motion.span
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 1.5 }}
+                    transition={{ duration: 1.2 }}
                   >
                     مراجعة أسئلة امتحان الرياضيات للصف الثالث...
                   </motion.span>
@@ -107,32 +139,45 @@ export function Scene3() {
           )}
         </AnimatePresence>
 
-        {/* Privacy Beat Overlay */}
+        {/* Privacy Beat Overlay: eye appears, then diagonal slash strikes through */}
         <AnimatePresence>
-          {phase >= 4 && (
+          {phase >= 5 && (
             <motion.div
+              key="privacy"
               className="absolute bottom-12 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm px-8 py-4 rounded-2xl shadow-xl border border-gray-200 flex items-center gap-6"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             >
-              <div className="relative">
+              <div className="relative w-16 h-16 flex items-center justify-center">
                 <motion.div
-                  initial={{ opacity: 1, scale: 1 }}
-                  animate={{ opacity: 0, scale: 0.5 }}
-                  transition={{ delay: 0.5, duration: 0.3 }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <EyeOff size={40} className="text-gray-400" />
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
+                  initial={{ opacity: 0, scale: 0.6 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6, duration: 0.4, type: "spring" }}
-                  className="flex items-center justify-center text-[var(--color-primary-light)]"
+                  transition={{ duration: 0.35, type: 'spring', stiffness: 240 }}
+                  className="text-[var(--color-primary-light)]"
                 >
-                  <EyeOff size={40} />
+                  <Eye size={48} />
                 </motion.div>
+                {phase >= 6 && (
+                  <svg
+                    viewBox="0 0 64 64"
+                    className="absolute inset-0 w-16 h-16 pointer-events-none"
+                    aria-hidden="true"
+                  >
+                    <motion.line
+                      x1="8"
+                      y1="56"
+                      x2="56"
+                      y2="8"
+                      stroke="#DC2626"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.45, ease: 'easeOut' }}
+                    />
+                  </svg>
+                )}
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-[var(--color-primary)] text-xl">ملاحظاتك خاصة بك</span>

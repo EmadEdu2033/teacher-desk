@@ -11,7 +11,7 @@ import { Scene6 } from './video_scenes/Scene6';
 export const SCENE_DURATIONS = {
   open: 4500,
   kinetic: 6000,
-  notes: 7500,
+  notes: 8500,
   podium: 7000,
   tasks: 5000,
   close: 6000,
