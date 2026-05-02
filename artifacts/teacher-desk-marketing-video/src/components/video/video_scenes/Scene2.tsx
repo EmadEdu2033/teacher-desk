@@ -15,7 +15,10 @@ export function Scene2() {
   return (
     <motion.div 
       className="absolute inset-0 flex items-center justify-center bg-[var(--color-bg-cream)]"
-      initial={{ opacity: 0, y: 50 }}
+      // Backdrop snaps in opaque so the wrapper's bg-black is never visible
+      // through the incoming scene during the crossfade from Scene1. The
+      // exit still fades, which is what produces the crossfade.
+      initial={{ opacity: 1, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 1.05 }}
       transition={{ duration: 0.6 }}

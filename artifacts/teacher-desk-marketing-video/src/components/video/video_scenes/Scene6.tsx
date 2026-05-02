@@ -4,7 +4,10 @@ export function Scene6() {
   return (
     <motion.div 
       className="absolute inset-0 bg-[var(--color-bg-dark)] flex items-center justify-center overflow-hidden"
-      initial={{ opacity: 0 }}
+      // Backdrop snaps in opaque so the wrapper's bg-black is never visible
+      // through the incoming scene during the crossfade from Scene5. The
+      // exit fade-out covers the loop boundary back to Scene1 (also dark).
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}

@@ -4,8 +4,12 @@ import { Plus, Eye, LayoutTemplate, CheckSquare, Settings, Sun, MonitorPlay } fr
 
 const NOTE_COLORS = ['#FEF08A', '#FCA5A5', '#86EFAC', '#93C5FD', '#F1F5F9'];
 
+// Backdrop is opaque from frame 0 so the wrapper's bg-black is never visible
+// through the incoming scene during the crossfade from Scene2. Inner content
+// (note + privacy badge) carries its own staged animations for visual interest;
+// the root only handles the exit fade-out that powers the crossfade.
 const sceneVariants: Variants = {
-  initial: { opacity: 0, scale: 0.95 },
+  initial: { opacity: 1, scale: 1 },
   animate: { opacity: 1, scale: 1 },
   exit: { opacity: 0, y: -50, scale: 0.95, transition: { duration: 0.4 } },
 };

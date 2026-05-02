@@ -18,7 +18,11 @@ export function Scene5() {
   return (
     <motion.div 
       className="absolute inset-0 bg-[#F8FAFC] overflow-hidden flex flex-col"
-      initial={{ opacity: 0 }}
+      // Backdrop snaps in opaque so the wrapper's bg-black is never visible
+      // through the incoming scene during the crossfade from Scene4. Inner
+      // task list still uses the staggered itemVariants below for visual
+      // interest; only the exit fade-out powers the crossfade to Scene6.
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
