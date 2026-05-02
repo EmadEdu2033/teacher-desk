@@ -103,21 +103,10 @@ export function Scene4() {
                 <div className="w-3 h-3 rounded-full bg-green-500" />
               </div>
             </div>
-            <div className="flex-1 flex items-center justify-center relative">
-              {/* Fake student video grid representation */}
-              <div className="w-full h-full p-4 grid grid-cols-2 gap-4 opacity-50">
-                <div className="bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700">
-                  <div className="w-16 h-16 rounded-full bg-gray-600" />
-                </div>
-                <div className="bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700">
-                  <div className="w-16 h-16 rounded-full bg-gray-600" />
-                </div>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div className="text-white text-2xl font-bold border-2 border-white/20 px-8 py-4 rounded-xl bg-black/50 flex flex-col items-center gap-2">
-                  <MonitorPlay size={40} className="text-[var(--color-success)] mb-2" />
-                  الطلاب لا يرون ملاحظاتك
-                </div>
+            <div className="flex-1 relative bg-black flex items-center justify-center">
+              <div className="text-white text-2xl font-bold flex flex-col items-center gap-3">
+                <MonitorPlay size={48} className="text-[var(--color-success)]" />
+                الطلاب لا يرون ملاحظاتك
               </div>
             </div>
           </motion.div>
