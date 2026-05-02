@@ -157,3 +157,16 @@ overrides:
   # drizzle-kit uses esbuild internally on an older version that's vulnerable, this overrides it
   "@esbuild-kit/esm-loader": "npm:tsx@^4.21.0"
   esbuild: "0.27.3"
+  # ----------------------------------------------------------------------------
+  # SECURITY: Force minimum patched versions for transitive dependencies
+  # flagged by the Replit dependency audit. All entries below pin a known-safe
+  # patch version of a vulnerable transitive dep. Revisit on next major bump of
+  # the parent tools (vite, orval, recharts, express).
+  # ----------------------------------------------------------------------------
+  brace-expansion: "^2.0.3"   # GHSA-f886-m6hf-6m8v (zero-step DoS)
+  lodash: "^4.18.0"            # GHSA-r5fr-rjxr-66jc + GHSA-f23m-r3pf-42rh (template RCE / prototype pollution)
+  path-to-regexp: "^8.4.0"     # GHSA-j3q9-mxjg-w52f + GHSA-27v5-c462-wpq7 (ReDoS)
+  picomatch@2: "^2.3.2"        # GHSA-c2c7-rcm5-vvqj + GHSA-3v7f-55p6-f55p (ReDoS) — v2 chain
+  picomatch@4: "^4.0.4"        # same advisories — v4 chain (vite/fdir/tinyglobby)
+  postcss: "^8.5.10"           # GHSA-qx2v-qp2m-jg93
+  yaml: "^2.8.3"               # GHSA-48c2-rrv3-qjmp
