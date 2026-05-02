@@ -1,0 +1,11 @@
+{
+  "name": "@workspace/teacher-desk-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production wrapper that serves the Teacher Desk download landing page at the root of the deployment.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js"
+  }
+}

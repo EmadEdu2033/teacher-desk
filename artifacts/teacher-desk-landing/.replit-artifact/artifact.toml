@@ -1,0 +1,22 @@
+kind = "api"
+previewPath = "/"
+title = "Teacher Desk — Landing Page"
+version = "1.0.0"
+id = "teacher-desk-landing"
+
+[[services]]
+localPort = 5000
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/teacher-desk-landing run dev"
+
+[services.production]
+
+[services.production.run]
+args = ["node", "artifacts/teacher-desk-landing/src/server.js"]
+
+[services.production.run.env]
+PORT = "5000"
+NODE_ENV = "production"

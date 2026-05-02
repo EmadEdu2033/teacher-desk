@@ -18,15 +18,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Teacher Desk Preview"
+args = "artifacts/teacher-desk-landing: web"
 
 [[workflows.workflow]]
-name = "Teacher Desk Preview"
+name = "artifacts/teacher-desk-landing: web"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "node teacher-desk/scripts/preview-server.js"
+args = "pnpm --filter @workspace/teacher-desk-landing run dev"
 waitForPort = 5000
 
 [workflows.workflow.metadata]

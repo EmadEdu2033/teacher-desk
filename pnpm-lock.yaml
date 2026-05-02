@@ -406,6 +406,8 @@ importers:
         specifier: 'catalog:'
         version: 3.25.76
 
+  artifacts/teacher-desk-landing: {}
+
   artifacts/teacher-desk-marketing-video:
     devDependencies:
       '@replit/vite-plugin-cartographer':
