@@ -56,6 +56,9 @@ const STATIC_URLS = {
   // do not auto-resolve directory URLs to index.html when there is no
   // HTTP server doing it for them.
   videoUrl:     './teacher-desk-marketing-video/index.html',
+  // Eager so the 30-second product tour starts the moment the user
+  // opens the page — the whole point of the bundle.
+  iframeLoading: 'eager',
 };
 
 function log(msg) {

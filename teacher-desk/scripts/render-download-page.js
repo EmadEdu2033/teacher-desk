@@ -76,6 +76,11 @@ function escapeHtml(s) {
 
 // URL set used by the dev preview server. Static export overrides these so
 // the bundle works at any subpath (file:// or any host directory).
+//
+// `iframeLoading` controls the video iframe's `loading` attribute. Dev keeps
+// 'lazy' so iterating on the landing page does not re-spin the Vite dev
+// server on every reload; the static export uses 'eager' so the embedded
+// video starts the moment the user opens index.html.
 const DEFAULT_URLS = {
   brandHref: '/download',
   iconUrl:   '/assets/icon.svg',
@@ -83,6 +88,7 @@ const DEFAULT_URLS = {
   fontUrl:   '/fonts/alexandria-arabic.woff2',
   installerUrl: '/download/TeacherDeskSetup.exe',
   videoUrl:  '/teacher-desk-marketing-video/',
+  iframeLoading: 'lazy',
 };
 
 // Friendly, bilingual (EN / AR) landing page for the signed Windows installer.
@@ -737,7 +743,7 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
             src="${escapeHtml(u.videoUrl)}"
             data-i18n-attr="title:videoIframeTitle"
             title="Teacher Desk — 30-second product tour"
-            loading="lazy"
+            loading="${escapeHtml(u.iframeLoading)}"
             allow="autoplay"
             referrerpolicy="no-referrer"></iframe>
         </div>
