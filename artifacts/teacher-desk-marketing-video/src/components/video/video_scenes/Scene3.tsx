@@ -83,7 +83,7 @@ export function Scene3() {
         >
           <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border border-gray-200 text-[var(--color-primary)] font-semibold cursor-pointer">
             <Plus size={20} />
-            <span>ملاحظة جديدة</span>
+            <span>+ ملاحظة جديدة</span>
           </div>
         </motion.div>
 

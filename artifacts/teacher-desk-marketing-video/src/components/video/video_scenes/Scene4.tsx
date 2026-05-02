@@ -103,11 +103,10 @@ export function Scene4() {
                 <div className="w-3 h-3 rounded-full bg-green-500" />
               </div>
             </div>
-            <div className="flex-1 relative bg-black flex items-center justify-center">
-              <div className="text-white text-2xl font-bold flex flex-col items-center gap-3">
-                <MonitorPlay size={48} className="text-[var(--color-success)]" />
-                الطلاب لا يرون ملاحظاتك
-              </div>
+            <div className="flex-1 bg-black" />
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white text-lg font-bold flex items-center gap-2 bg-black/70 px-4 py-2 rounded-full">
+              <MonitorPlay size={20} className="text-[var(--color-success)]" />
+              الطلاب لا يرون ملاحظاتك
             </div>
           </motion.div>
         )}
