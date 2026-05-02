@@ -88,7 +88,17 @@ video-js artifact. Lives at `artifacts/teacher-desk-marketing-video/`.
   the font loads under any base path).
 - **Composition**: `VideoTemplate.tsx` renders the active scene inside a hard
   16:9 aspect-ratio frame (no UI chrome, no preview controls) so the exported
-  video keeps its framing under any viewport size.
+  video keeps its framing under any viewport size. **Scene swapping uses a
+  plain React `key` change — NOT `<AnimatePresence>`.** Two earlier attempts
+  with `AnimatePresence` broke playback: `mode="wait"` produced a 1.2s black
+  flash between scenes (Task #35), and removing `mode="wait"` left both
+  scenes mounted with animated z-index that interacted badly with each
+  scene's own internal `AnimatePresence` (Scene2's word ticker, Scene3's
+  note picker) and froze playback on Scene 1 in production builds. The
+  current key-swap pattern unmounts the old scene and mounts the new one
+  in the same render — every scene's own framer-motion entrance animations
+  still play because they live inside the scene component, and the snappy
+  hard cut never exposes the wrapper `bg-black` for more than one frame.
 - **Export**: standard video-js export pipeline (`bash scripts/validate-recording.sh`
   must pass; user records the looping preview into `.mp4`/`.webm`).
 - **Out of scope**: audio/voice-over (video-js is silent by design), real
