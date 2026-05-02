@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Alexandria';
+  src: url('./assets/fonts/alexandria-arabic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-primary: #0F172A;
+  --color-primary-light: #1D4ED8;
+  --color-secondary: #60A5FA;
+  --color-secondary-light: #93C5FD;
+  
+  --color-bg-light: #FFFFFF;
+  --color-bg-cream: #FAF9F6; /* warm cream */
+  --color-bg-dark: #0F172A;
+  
+  --color-text-primary: #0F172A;
+  --color-text-inverse: #FFFFFF;
+  --color-text-muted: #64748B;
+  
+  --font-display: 'Alexandria', sans-serif;
+  --font-body: 'Alexandria', sans-serif;
+  --font-latin: 'Plus Jakarta Sans', sans-serif;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-primary-light: var(--color-primary-light);
+  --color-secondary: var(--color-secondary);
+  --color-secondary-light: var(--color-secondary-light);
+  --color-bg-light: var(--color-bg-light);
+  --color-bg-cream: var(--color-bg-cream);
+  --color-bg-dark: var(--color-bg-dark);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-inverse: var(--color-text-inverse);
+  --color-text-muted: var(--color-text-muted);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-latin: var(--font-latin);
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilities for hiding scrollbars etc if needed */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

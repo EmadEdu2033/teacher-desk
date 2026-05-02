@@ -69,6 +69,31 @@ The end-user downloads `TeacherDeskSetup.exe` (~76 MB) and double-clicks it. The
 ### Code-signing
 `build:win` Authenticode-signs both `Teacher Desk.exe` (inside `win-unpacked`) and the final `TeacherDeskSetup.exe`. Signing uses `osslsigncode` (cross-platform, Linux-friendly — no `signtool.exe` or Wine required) via `scripts/sign.js`, which reads `build.win.certificateFile` / `publisherName` from `package.json` and the cert password from the `WIN_CSC_KEY_PASSWORD` env var. A self-signed dev cert can be generated via `npm run cert:dev` (verifies the pipeline; does NOT remove SmartScreen warnings — only a real CA-issued cert does). The `.pfx` file is gitignored. See `teacher-desk/README.md` "Code-signing" for full details.
 
+## Teacher Desk — Marketing Video (Arabic)
+
+A short Arabic-language motion-graphics promo for Teacher Desk, built as a
+video-js artifact. Lives at `artifacts/teacher-desk-marketing-video/`.
+
+- **Runtime**: React + Vite + Framer Motion (video-js scaffold)
+- **Length**: ~36s, 16:9, autoplay + loop, RTL, Alexandria font
+- **Scenes** (`src/components/video/video_scenes/Scene{1..6}.tsx`):
+  1. Open — chalkboard brand mark draws in over the word "للمعلم"
+  2. Kinetic — vertical-roller carousel cycles "ملاحظات / مهام / منصة / تركيز"
+  3. Notes — recreated topbar, "+ ملاحظة جديدة" click, yellow note types out, eye-with-strikethrough privacy beat
+  4. Podium — split view: teacher sees notes, Zoom/Meet pane shows blackbox
+  5. Tasks — calm shot of recreated tasks board with priority chip
+  6. Close — Coach Emad portrait + "Coach Emad" Latin lockup + "Presented and created by Coach Emad"
+- **Brand assets** staged in `public/brand/` (coach-emad.jpg, icon.svg) and
+  `src/assets/fonts/alexandria-arabic.woff2` (Vite-rewritten relative URL so
+  the font loads under any base path).
+- **Scene controls** (`VideoWithControls.tsx` + `useSceneControls.ts`): jump
+  bar + scene-lock loop, only mounted inside the Replit preview iframe so the
+  exported video stays clean.
+- **Export**: standard video-js export pipeline (`bash scripts/validate-recording.sh`
+  must pass; user records the looping preview into `.mp4`/`.webm`).
+- **Out of scope**: audio/voice-over (video-js is silent by design), real
+  screen recording of the signed `.exe` (Wine is blocked in the sandbox).
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces
