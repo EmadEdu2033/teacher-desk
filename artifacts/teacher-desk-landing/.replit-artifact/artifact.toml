@@ -14,6 +14,9 @@ run = "pnpm --filter @workspace/teacher-desk-landing run dev"
 
 [services.production]
 
+[services.production.build]
+args = ["true"]
+
 [services.production.run]
 args = ["node", "artifacts/teacher-desk-landing/src/server.js"]
 
