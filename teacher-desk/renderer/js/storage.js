@@ -136,6 +136,7 @@ const web = {
     async listAuto() { return { ok: true, dir: '', files: [] }; },
     async lastStatus() { return { ok: true, lastFailure: null }; },
     async restoreAuto() { alert('Restore is only available in the installed Windows app.'); return { ok: false }; },
+    async runAutoNow() { alert('Manual backups are only available in the installed Windows app.'); return { ok: false }; },
     async openAutoFolder() { alert('Backups folder is only available in the installed Windows app.'); return { ok: false }; },
   },
   openDataFolder: async () => false,

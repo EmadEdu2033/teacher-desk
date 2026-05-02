@@ -144,13 +144,18 @@ function rotatePreRestoreBackups(keep = 3) {
 let lastAutoBackupDate = null;
 let autoBackupTimer = null;
 
-function runAutoBackup() {
+function runAutoBackup({ force = false } = {}) {
   try {
-    if (!fs.existsSync(dbPath)) return;
+    if (!fs.existsSync(dbPath)) {
+      return { ok: false, error: 'Database file not found.' };
+    }
     ensureBackupsDir();
     const stamp = todayStamp();
     const target = path.join(backupsDir, `teacher-desk-${stamp}.db`);
-    if (!fs.existsSync(target)) {
+    // When triggered manually we force a fresh copy so the daily snapshot
+    // reflects the current state of the database, not the version that
+    // existed earlier today.
+    if (force || !fs.existsSync(target)) {
       try { db.pragma('wal_checkpoint(TRUNCATE)'); } catch {}
       fs.copyFileSync(dbPath, target);
     }
@@ -159,6 +164,7 @@ function runAutoBackup() {
     // A successful run clears any previously recorded failure so the
     // renderer's warning banner disappears on the next refresh.
     try { setSetting('lastBackupFailure', null); } catch {}
+    return { ok: true, name: path.basename(target), path: target };
   } catch (err) {
     const reason = err && err.message ? String(err.message) : String(err);
     console.warn('Auto-backup failed:', reason);
@@ -168,6 +174,7 @@ function runAutoBackup() {
         reason: reason.slice(0, 500),
       });
     } catch {}
+    return { ok: false, error: reason };
   }
 }
 
@@ -510,6 +517,10 @@ ipcMain.handle('backup:lastStatus', () => {
   } catch (e) {
     return { ok: false, error: e.message, lastFailure: null };
   }
+});
+
+ipcMain.handle('backup:runAutoNow', () => {
+  return runAutoBackup({ force: true });
 });
 
 ipcMain.handle('backup:openAutoFolder', () => {

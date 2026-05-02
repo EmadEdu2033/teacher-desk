@@ -30,6 +30,7 @@ contextBridge.exposeInMainWorld('td', {
     listAuto:      () => ipcRenderer.invoke('backup:listAuto'),
     lastStatus:    () => ipcRenderer.invoke('backup:lastStatus'),
     restoreAuto:   (name) => ipcRenderer.invoke('backup:restoreAuto', name),
+    runAutoNow:    () => ipcRenderer.invoke('backup:runAutoNow'),
     openAutoFolder:() => ipcRenderer.invoke('backup:openAutoFolder'),
   },
   openDataFolder: () => ipcRenderer.invoke('app:openDataFolder'),

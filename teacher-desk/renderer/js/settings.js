@@ -61,6 +61,28 @@ export async function initSettings() {
     await storage.backup.openAutoFolder();
   });
 
+  document.getElementById('backupNowBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    try {
+      const r = storage.backup.runAutoNow ? await storage.backup.runAutoNow() : { ok: false };
+      if (r && r.ok) {
+        showToast(t('toast.backupNowSuccess'));
+        await refreshAutoBackups();
+      } else {
+        // Keep user-facing copy translated; log raw errors for diagnostics.
+        if (r && r.error) console.warn('Manual backup failed:', r.error);
+        showToast(t('toast.backupNowFailed'));
+        await refreshAutoBackups();
+      }
+    } catch (err) {
+      console.warn('Manual backup failed:', err);
+      showToast(t('toast.backupNowFailed'));
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
   await refreshAutoBackups();
   await refreshAboutVersion();
 
