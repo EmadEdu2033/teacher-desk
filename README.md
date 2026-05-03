@@ -255,7 +255,7 @@ teacher-desk/
 
 <div align="center">
 
-**Made with ❤️ for Teachers, by Teachers**
+**Made with ❤️ for Teachers, by coach emad**
 
 **Built by FutureTeach · Empowering educators worldwide**
 
