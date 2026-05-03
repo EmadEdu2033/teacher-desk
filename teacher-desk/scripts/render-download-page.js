@@ -1,10 +1,10 @@
-// Pure renderer for the Teacher Desk download landing page.
+﻿// Pure renderer for the Teacher Desk download landing page.
 //
 // Extracted from preview-server.js so it can be reused by the static export
 // script (export-static.js). The function takes an optional `urls` map so the
 // same template can produce either:
-//   - the dynamic dev page (default — server-relative URLs like /download/…)
-//   - a self-contained static bundle (relative URLs like ./downloads/…)
+//   - the dynamic dev page (default â€” server-relative URLs like /download/â€¦)
+//   - a self-contained static bundle (relative URLs like ./downloads/â€¦)
 //
 // Importing this module has no side effects (no HTTP listener, no file
 // reads at import time). All disk access happens inside the exported
@@ -21,11 +21,11 @@ const INSTALLER_FILE = path.join(DOWNLOADS_ROOT, 'TeacherDeskSetup.exe');
 // In-memory cache of the installer's size + sha256, keyed by the file's
 // (size, mtimeMs) pair. We re-stat on every call so a re-published installer
 // is reflected immediately, but we only re-hash when the file actually
-// changed — hashing 75 MB on every page render would be wasteful.
+// changed â€” hashing 75 MB on every page render would be wasteful.
 let installerCache = null; // { size, mtimeMs, sha256, prettySize }
 
 function prettyBytes(bytes) {
-  if (!Number.isFinite(bytes)) return '—';
+  if (!Number.isFinite(bytes)) return 'â€”';
   const mb = bytes / 1024 / 1024;
   return `${mb.toFixed(1)} MB (${bytes.toLocaleString('en-US')} bytes)`;
 }
@@ -88,7 +88,7 @@ const DEFAULT_URLS = {
   fontUrl:   '/fonts/alexandria-arabic.woff2',
   installerUrl: '/download/TeacherDeskSetup.exe',
   videoUrl:  '/teacher-desk-marketing-video/',
-  iframeLoading: 'lazy',
+  iframeLoading: 'eager',
 };
 
 // Friendly, bilingual (EN / AR) landing page for the signed Windows installer.
@@ -101,22 +101,22 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
   const u = { ...DEFAULT_URLS, ...urls };
   const info = getInstallerInfo();
 
-  // Live size for the CTA button label (e.g. "· 82.9 MB"). Falls back to a
+  // Live size for the CTA button label (e.g. "Â· 82.9 MB"). Falls back to a
   // placeholder if the file isn't on disk; the bilingual labels below
   // include their own translation keys for the surrounding text.
   const sizeRaw = info
     ? `${(info.size / 1024 / 1024).toFixed(1)} MB`
-    : '—';
-  const sizeShort = info ? `· ${sizeRaw}` : sizeRaw;
+    : 'â€”';
+  const sizeShort = info ? `Â· ${sizeRaw}` : sizeRaw;
 
-  // Fingerprint values are inserted as raw strings (size + sha) — escapeHtml
+  // Fingerprint values are inserted as raw strings (size + sha) â€” escapeHtml
   // is unnecessary because both come from a local trusted file, but we keep
   // it for defence in depth.
   const sizePretty = info ? escapeHtml(info.prettySize) : '';
   const sha256 = info ? escapeHtml(info.sha256) : '';
   const installerAvailable = info ? 'true' : 'false';
 
-  // Embedded i18n table — the toggle script reads from this. Keep the keys
+  // Embedded i18n table â€” the toggle script reads from this. Keep the keys
   // identical to the data-i18n attributes used in the markup below.
   const i18n = {
     en: {
@@ -124,38 +124,38 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
       htmlDir:  'ltr',
       docTitle: 'Download Teacher Desk',
       brandName: 'Teacher Desk',
-      langButton: 'ع',
-      langButtonTitle: 'التبديل إلى العربية',
+      langButton: 'Ø¹',
+      langButtonTitle: 'Ø§Ù„ØªØ¨Ø¯ÙŠÙ„ Ø¥Ù„Ù‰ Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©',
       heroTitle: 'Teacher Desk',
-      heroSubtitle: 'Sticky notes, tasks, and Podium mode — all on your computer.',
+      heroSubtitle: 'Sticky notes, tasks, and Podium mode â€” all on your computer.',
       heroLead: 'A quiet, offline desk for online teachers. Your notes and tasks never leave your machine.',
       featureNotesTitle: 'Sticky notes',
-      featureNotesBody: 'A wall of colourful notes you can drag, resize and zoom — like a real desk.',
+      featureNotesBody: 'A wall of colourful notes you can drag, resize and zoom â€” like a real desk.',
       featureTasksTitle: 'Tasks at a glance',
       featureTasksBody: 'Plan lessons, mark sub-tasks, and get a gentle reminder when something is due.',
       featurePodiumTitle: 'Podium mode',
-      featurePodiumBody: 'Hide the app from screen capture in one click — Zoom and Meet see only a black box.',
+      featurePodiumBody: 'Hide the app from screen capture in one click â€” Zoom and Meet see only a black box.',
       featureOfflineTitle: 'Stays on your computer',
       featureOfflineBody: 'No account, no cloud, no tracking. Everything is stored locally.',
       ctaLabel: 'Download for Windows',
       ctaSize: sizeShort,
-      ctaReassurance: `Verified publisher: Teacher Desk · Windows 10 / 11 · ${sizeRaw}`,
-      installHint: 'After downloading, double-click the file. Windows will show <strong>Verified publisher: Teacher Desk</strong> in the install prompt — click <em>Yes</em>.',
+      ctaReassurance: `Verified publisher: Teacher Desk Â· Windows 10 / 11 Â· ${sizeRaw}`,
+      installHint: 'After downloading, double-click the file. Windows will show <strong>Verified publisher: Teacher Desk</strong> in the install prompt â€” click <em>Yes</em>.',
       fingerprintHeading: 'File fingerprint',
       sizeLabel: 'Size',
       sha256Label: 'SHA-256',
-      fingerprintHint: 'If your downloaded file\u2019s size or SHA-256 does not match the values above, the download is corrupted — delete it and try again.',
+      fingerprintHint: 'If your downloaded file\u2019s size or SHA-256 does not match the values above, the download is corrupted â€” delete it and try again.',
       missingInstaller: 'The installer file is not currently available on the server. Please come back in a moment.',
       footerCredit: 'Created by Coach Emad',
       footerVersion: 'Teacher Desk v1.0',
       featuresLabel: 'Features',
       videoEyebrow: 'See it in action',
       videoTitle: 'A 30-second tour of Teacher Desk',
-      videoLead: 'Sticky notes, tasks, and Podium mode — exactly the way they look on your computer.',
-      videoCaption: 'Silent preview · Loops automatically',
-      videoIframeTitle: 'Teacher Desk — 30-second product tour',
+      videoLead: 'Sticky notes, tasks, and Podium mode â€” exactly the way they look on your computer.',
+      videoCaption: 'Silent preview Â· Loops automatically',
+      videoIframeTitle: 'Teacher Desk â€” 30-second product tour',
       mockS1Title: 'Lesson 12',
-      mockS1Body:  'Past simple — examples',
+      mockS1Body:  'Past simple â€” examples',
       mockS2Title: 'Reminder',
       mockS2Body:  "Mark Sara's homework",
       mockS3Title: 'Podium',
@@ -166,46 +166,46 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
     ar: {
       htmlLang: 'ar',
       htmlDir:  'rtl',
-      docTitle: 'تنزيل مكتب المعلم',
-      brandName: 'مكتب المعلم',
+      docTitle: 'ØªÙ†Ø²ÙŠÙ„ Ù…ÙƒØªØ¨ Ø§Ù„Ù…Ø¹Ù„Ù…',
+      brandName: 'Ù…ÙƒØªØ¨ Ø§Ù„Ù…Ø¹Ù„Ù…',
       langButton: 'EN',
       langButtonTitle: 'Switch to English',
-      heroTitle: 'مكتب المعلم',
-      heroSubtitle: 'ملاحظات لاصقة، مهام، ووضع المنصة — على جهازك فقط.',
-      heroLead: 'مكتب هادئ يعمل بدون إنترنت لمعلمي الأونلاين. ملاحظاتك ومهامك لا تغادر جهازك أبداً.',
-      featureNotesTitle: 'ملاحظات لاصقة',
-      featureNotesBody: 'حائط ملاحظات بألوان جميلة يمكنك سحبها وتكبيرها — تماماً مثل مكتبك الحقيقي.',
-      featureTasksTitle: 'مهامك أمامك',
-      featureTasksBody: 'خطّط للحصص، وقسّم المهام إلى خطوات، واحصل على تنبيه لطيف عند الموعد.',
-      featurePodiumTitle: 'وضع المنصة',
-      featurePodiumBody: 'أخفِ البرنامج من تسجيل الشاشة بضغطة واحدة — Zoom و Meet يريان مربعاً أسود فقط.',
-      featureOfflineTitle: 'بياناتك على جهازك',
-      featureOfflineBody: 'بدون حساب، بدون سحابة، بدون تتبّع. كل شيء محفوظ محلياً.',
-      ctaLabel: 'تنزيل لويندوز',
+      heroTitle: 'Ù…ÙƒØªØ¨ Ø§Ù„Ù…Ø¹Ù„Ù…',
+      heroSubtitle: 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ù„Ø§ØµÙ‚Ø©ØŒ Ù…Ù‡Ø§Ù…ØŒ ÙˆÙˆØ¶Ø¹ Ø§Ù„Ù…Ù†ØµØ© â€” Ø¹Ù„Ù‰ Ø¬Ù‡Ø§Ø²Ùƒ ÙÙ‚Ø·.',
+      heroLead: 'Ù…ÙƒØªØ¨ Ù‡Ø§Ø¯Ø¦ ÙŠØ¹Ù…Ù„ Ø¨Ø¯ÙˆÙ† Ø¥Ù†ØªØ±Ù†Øª Ù„Ù…Ø¹Ù„Ù…ÙŠ Ø§Ù„Ø£ÙˆÙ†Ù„Ø§ÙŠÙ†. Ù…Ù„Ø§Ø­Ø¸Ø§ØªÙƒ ÙˆÙ…Ù‡Ø§Ù…Ùƒ Ù„Ø§ ØªØºØ§Ø¯Ø± Ø¬Ù‡Ø§Ø²Ùƒ Ø£Ø¨Ø¯Ø§Ù‹.',
+      featureNotesTitle: 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ù„Ø§ØµÙ‚Ø©',
+      featureNotesBody: 'Ø­Ø§Ø¦Ø· Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø¨Ø£Ù„ÙˆØ§Ù† Ø¬Ù…ÙŠÙ„Ø© ÙŠÙ…ÙƒÙ†Ùƒ Ø³Ø­Ø¨Ù‡Ø§ ÙˆØªÙƒØ¨ÙŠØ±Ù‡Ø§ â€” ØªÙ…Ø§Ù…Ø§Ù‹ Ù…Ø«Ù„ Ù…ÙƒØªØ¨Ùƒ Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠ.',
+      featureTasksTitle: 'Ù…Ù‡Ø§Ù…Ùƒ Ø£Ù…Ø§Ù…Ùƒ',
+      featureTasksBody: 'Ø®Ø·Ù‘Ø· Ù„Ù„Ø­ØµØµØŒ ÙˆÙ‚Ø³Ù‘Ù… Ø§Ù„Ù…Ù‡Ø§Ù… Ø¥Ù„Ù‰ Ø®Ø·ÙˆØ§ØªØŒ ÙˆØ§Ø­ØµÙ„ Ø¹Ù„Ù‰ ØªÙ†Ø¨ÙŠÙ‡ Ù„Ø·ÙŠÙ Ø¹Ù†Ø¯ Ø§Ù„Ù…ÙˆØ¹Ø¯.',
+      featurePodiumTitle: 'ÙˆØ¶Ø¹ Ø§Ù„Ù…Ù†ØµØ©',
+      featurePodiumBody: 'Ø£Ø®ÙÙ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ Ù…Ù† ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø´Ø§Ø´Ø© Ø¨Ø¶ØºØ·Ø© ÙˆØ§Ø­Ø¯Ø© â€” Zoom Ùˆ Meet ÙŠØ±ÙŠØ§Ù† Ù…Ø±Ø¨Ø¹Ø§Ù‹ Ø£Ø³ÙˆØ¯ ÙÙ‚Ø·.',
+      featureOfflineTitle: 'Ø¨ÙŠØ§Ù†Ø§ØªÙƒ Ø¹Ù„Ù‰ Ø¬Ù‡Ø§Ø²Ùƒ',
+      featureOfflineBody: 'Ø¨Ø¯ÙˆÙ† Ø­Ø³Ø§Ø¨ØŒ Ø¨Ø¯ÙˆÙ† Ø³Ø­Ø§Ø¨Ø©ØŒ Ø¨Ø¯ÙˆÙ† ØªØªØ¨Ù‘Ø¹. ÙƒÙ„ Ø´ÙŠØ¡ Ù…Ø­ÙÙˆØ¸ Ù…Ø­Ù„ÙŠØ§Ù‹.',
+      ctaLabel: 'ØªÙ†Ø²ÙŠÙ„ Ù„ÙˆÙŠÙ†Ø¯ÙˆØ²',
       ctaSize: sizeShort,
-      ctaReassurance: `الناشر الموثّق: Teacher Desk · يعمل على Windows 10 / 11 · ${sizeRaw}`,
-      installHint: 'بعد التنزيل، اضغط مرتين على الملف. سيُظهر ويندوز <strong>الناشر الموثّق: Teacher Desk</strong> في نافذة التثبيت — اضغط <em>نعم</em>.',
-      fingerprintHeading: 'بصمة الملف',
-      sizeLabel: 'الحجم',
+      ctaReassurance: `Ø§Ù„Ù†Ø§Ø´Ø± Ø§Ù„Ù…ÙˆØ«Ù‘Ù‚: Teacher Desk Â· ÙŠØ¹Ù…Ù„ Ø¹Ù„Ù‰ Windows 10 / 11 Â· ${sizeRaw}`,
+      installHint: 'Ø¨Ø¹Ø¯ Ø§Ù„ØªÙ†Ø²ÙŠÙ„ØŒ Ø§Ø¶ØºØ· Ù…Ø±ØªÙŠÙ† Ø¹Ù„Ù‰ Ø§Ù„Ù…Ù„Ù. Ø³ÙŠÙØ¸Ù‡Ø± ÙˆÙŠÙ†Ø¯ÙˆØ² <strong>Ø§Ù„Ù†Ø§Ø´Ø± Ø§Ù„Ù…ÙˆØ«Ù‘Ù‚: Teacher Desk</strong> ÙÙŠ Ù†Ø§ÙØ°Ø© Ø§Ù„ØªØ«Ø¨ÙŠØª â€” Ø§Ø¶ØºØ· <em>Ù†Ø¹Ù…</em>.',
+      fingerprintHeading: 'Ø¨ØµÙ…Ø© Ø§Ù„Ù…Ù„Ù',
+      sizeLabel: 'Ø§Ù„Ø­Ø¬Ù…',
       sha256Label: 'SHA-256',
-      fingerprintHint: 'إذا لم يتطابق حجم الملف الذي نزّلته أو بصمة SHA-256 مع القيم أعلاه، فالتنزيل تالف — احذفه وأعد المحاولة.',
-      missingInstaller: 'ملف التثبيت غير متوفر حالياً على الخادم. تفضّل بالعودة بعد قليل.',
-      footerCredit: 'مقدم من Coach Emad',
-      footerVersion: 'مكتب المعلم — الإصدار 1.0',
-      featuresLabel: 'المميّزات',
-      videoEyebrow: 'شاهد البرنامج بنفسك',
-      videoTitle: 'جولة في ٣٠ ثانية داخل مكتب المعلم',
-      videoLead: 'الملاحظات اللاصقة، والمهام، ووضع المنصة — كما تظهر تماماً على جهازك.',
-      videoCaption: 'عرض صامت · يعيد نفسه تلقائياً',
-      videoIframeTitle: 'مكتب المعلم — جولة قصيرة في البرنامج',
-      mockS1Title: 'الحصة ١٢',
-      mockS1Body:  'الزمن الماضي البسيط — أمثلة',
-      mockS2Title: 'تذكير',
-      mockS2Body:  'تصحيح واجب سارة',
-      mockS3Title: 'وضع المنصة',
-      mockS3Body:  'إخفاء الشاشة أثناء الميت',
-      mockS4Title: 'المهام',
-      mockS4Body:  '٣ مستحقة اليوم',
+      fingerprintHint: 'Ø¥Ø°Ø§ Ù„Ù… ÙŠØªØ·Ø§Ø¨Ù‚ Ø­Ø¬Ù… Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø°ÙŠ Ù†Ø²Ù‘Ù„ØªÙ‡ Ø£Ùˆ Ø¨ØµÙ…Ø© SHA-256 Ù…Ø¹ Ø§Ù„Ù‚ÙŠÙ… Ø£Ø¹Ù„Ø§Ù‡ØŒ ÙØ§Ù„ØªÙ†Ø²ÙŠÙ„ ØªØ§Ù„Ù â€” Ø§Ø­Ø°ÙÙ‡ ÙˆØ£Ø¹Ø¯ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©.',
+      missingInstaller: 'Ù…Ù„Ù Ø§Ù„ØªØ«Ø¨ÙŠØª ØºÙŠØ± Ù…ØªÙˆÙØ± Ø­Ø§Ù„ÙŠØ§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø®Ø§Ø¯Ù…. ØªÙØ¶Ù‘Ù„ Ø¨Ø§Ù„Ø¹ÙˆØ¯Ø© Ø¨Ø¹Ø¯ Ù‚Ù„ÙŠÙ„.',
+      footerCredit: 'Ù…Ù‚Ø¯Ù… Ù…Ù† Coach Emad',
+      footerVersion: 'Ù…ÙƒØªØ¨ Ø§Ù„Ù…Ø¹Ù„Ù… â€” Ø§Ù„Ø¥ØµØ¯Ø§Ø± 1.0',
+      featuresLabel: 'Ø§Ù„Ù…Ù…ÙŠÙ‘Ø²Ø§Øª',
+      videoEyebrow: 'Ø´Ø§Ù‡Ø¯ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ Ø¨Ù†ÙØ³Ùƒ',
+      videoTitle: 'Ø¬ÙˆÙ„Ø© ÙÙŠ Ù£Ù  Ø«Ø§Ù†ÙŠØ© Ø¯Ø§Ø®Ù„ Ù…ÙƒØªØ¨ Ø§Ù„Ù…Ø¹Ù„Ù…',
+      videoLead: 'Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ù„Ù„Ø§ØµÙ‚Ø©ØŒ ÙˆØ§Ù„Ù…Ù‡Ø§Ù…ØŒ ÙˆÙˆØ¶Ø¹ Ø§Ù„Ù…Ù†ØµØ© â€” ÙƒÙ…Ø§ ØªØ¸Ù‡Ø± ØªÙ…Ø§Ù…Ø§Ù‹ Ø¹Ù„Ù‰ Ø¬Ù‡Ø§Ø²Ùƒ.',
+      videoCaption: 'Ø¹Ø±Ø¶ ØµØ§Ù…Øª Â· ÙŠØ¹ÙŠØ¯ Ù†ÙØ³Ù‡ ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹',
+      videoIframeTitle: 'Ù…ÙƒØªØ¨ Ø§Ù„Ù…Ø¹Ù„Ù… â€” Ø¬ÙˆÙ„Ø© Ù‚ØµÙŠØ±Ø© ÙÙŠ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬',
+      mockS1Title: 'Ø§Ù„Ø­ØµØ© Ù¡Ù¢',
+      mockS1Body:  'Ø§Ù„Ø²Ù…Ù† Ø§Ù„Ù…Ø§Ø¶ÙŠ Ø§Ù„Ø¨Ø³ÙŠØ· â€” Ø£Ù…Ø«Ù„Ø©',
+      mockS2Title: 'ØªØ°ÙƒÙŠØ±',
+      mockS2Body:  'ØªØµØ­ÙŠØ­ ÙˆØ§Ø¬Ø¨ Ø³Ø§Ø±Ø©',
+      mockS3Title: 'ÙˆØ¶Ø¹ Ø§Ù„Ù…Ù†ØµØ©',
+      mockS3Body:  'Ø¥Ø®ÙØ§Ø¡ Ø§Ù„Ø´Ø§Ø´Ø© Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ù…ÙŠØª',
+      mockS4Title: 'Ø§Ù„Ù…Ù‡Ø§Ù…',
+      mockS4Body:  'Ù£ Ù…Ø³ØªØ­Ù‚Ø© Ø§Ù„ÙŠÙˆÙ…',
     },
   };
 
@@ -222,7 +222,7 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src 'self';" />
   <style>
-    /* --- Alexandria — covers Latin + Arabic so the page feels like one family. */
+    /* --- Alexandria â€” covers Latin + Arabic so the page feels like one family. */
     @font-face {
       font-family: "Alexandria";
       font-style: normal;
@@ -693,14 +693,14 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
       <button id="langToggle" class="lang-toggle" type="button"
               data-i18n-attr="title:langButtonTitle;aria-label:langButtonTitle"
               title="Switch language" aria-label="Switch language">
-        <span data-i18n="langButton">ع</span>
+        <span data-i18n="langButton">Ø¹</span>
       </button>
     </header>
 
     <section class="hero">
       <div class="hero-copy">
         <h1 data-i18n="heroTitle">Teacher Desk</h1>
-        <p class="subtitle" data-i18n="heroSubtitle">Sticky notes, tasks, and Podium mode — all on your computer.</p>
+        <p class="subtitle" data-i18n="heroSubtitle">Sticky notes, tasks, and Podium mode â€” all on your computer.</p>
         <p class="lead" data-i18n="heroLead">A quiet, offline desk for online teachers. Your notes and tasks never leave your machine.</p>
 
         <div class="cta-wrap">
@@ -709,12 +709,12 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
             <span data-i18n="ctaLabel">Download for Windows</span>
             <span class="cta-size" id="ctaSize">${escapeHtml(sizeShort)}</span>
           </a>
-          <span class="reassurance" data-i18n="ctaReassurance">Verified publisher: Teacher Desk · Windows 10 / 11</span>
+          <span class="reassurance" data-i18n="ctaReassurance">Verified publisher: Teacher Desk Â· Windows 10 / 11</span>
         </div>
 
         <p class="install-hint" data-i18n-html="installHint">
           After downloading, double-click the file. Windows will show
-          <strong>Verified publisher: Teacher Desk</strong> in the install prompt — click <em>Yes</em>.
+          <strong>Verified publisher: Teacher Desk</strong> in the install prompt â€” click <em>Yes</em>.
         </p>
       </div>
 
@@ -724,7 +724,7 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
         </div>
         <div class="body">
           <div class="stickies">
-            <div class="sticky s1"><b data-i18n="mockS1Title">Lesson 12</b><span data-i18n="mockS1Body">Past simple — examples</span></div>
+            <div class="sticky s1"><b data-i18n="mockS1Title">Lesson 12</b><span data-i18n="mockS1Body">Past simple â€” examples</span></div>
             <div class="sticky s2"><b data-i18n="mockS2Title">Reminder</b><span data-i18n="mockS2Body">Mark Sara's homework</span></div>
             <div class="sticky s3"><b data-i18n="mockS3Title">Podium</b><span data-i18n="mockS3Body">Hide screen during meet</span></div>
             <div class="sticky s4"><b data-i18n="mockS4Title">Tasks</b><span data-i18n="mockS4Body">3 due today</span></div>
@@ -736,19 +736,19 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
     <section class="video-section" aria-labelledby="videoTitle">
       <span class="video-eyebrow" data-i18n="videoEyebrow">See it in action</span>
       <h2 id="videoTitle" data-i18n="videoTitle">A 30-second tour of Teacher Desk</h2>
-      <p class="video-lead" data-i18n="videoLead">Sticky notes, tasks, and Podium mode — exactly the way they look on your computer.</p>
+      <p class="video-lead" data-i18n="videoLead">Sticky notes, tasks, and Podium mode â€” exactly the way they look on your computer.</p>
       <div class="video-frame">
         <div class="video-aspect">
           <iframe
             src="${escapeHtml(u.videoUrl)}"
             data-i18n-attr="title:videoIframeTitle"
-            title="Teacher Desk — 30-second product tour"
+            title="Teacher Desk â€” 30-second product tour"
             loading="${escapeHtml(u.iframeLoading)}"
             allow="autoplay"
             referrerpolicy="no-referrer"></iframe>
         </div>
       </div>
-      <p class="video-caption" data-i18n="videoCaption">Silent preview · Loops automatically</p>
+      <p class="video-caption" data-i18n="videoCaption">Silent preview Â· Loops automatically</p>
     </section>
 
     <section class="features" data-i18n-attr="aria-label:featuresLabel" aria-label="Features">
@@ -757,7 +757,7 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
         </span>
         <h3 data-i18n="featureNotesTitle">Sticky notes</h3>
-        <p data-i18n="featureNotesBody">A wall of colourful notes you can drag, resize and zoom — like a real desk.</p>
+        <p data-i18n="featureNotesBody">A wall of colourful notes you can drag, resize and zoom â€” like a real desk.</p>
       </div>
       <div class="feature">
         <span class="icon" aria-hidden="true">
@@ -771,7 +771,7 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
         </span>
         <h3 data-i18n="featurePodiumTitle">Podium mode</h3>
-        <p data-i18n="featurePodiumBody">Hide the app from screen capture in one click — Zoom and Meet see only a black box.</p>
+        <p data-i18n="featurePodiumBody">Hide the app from screen capture in one click â€” Zoom and Meet see only a black box.</p>
       </div>
       <div class="feature">
         <span class="icon" aria-hidden="true">
@@ -787,7 +787,7 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
       <h3 data-i18n="fingerprintHeading">File fingerprint</h3>
       <div class="row"><span class="label" data-i18n="sizeLabel">Size</span><span class="value">${sizePretty}</span></div>
       <div class="row"><span class="label" data-i18n="sha256Label">SHA-256</span><code class="value sha">${sha256}</code></div>
-      <p class="hint" data-i18n="fingerprintHint">If your downloaded file's size or SHA-256 does not match the values above, the download is corrupted — delete it and try again.</p>
+      <p class="hint" data-i18n="fingerprintHint">If your downloaded file's size or SHA-256 does not match the values above, the download is corrupted â€” delete it and try again.</p>
       ` : `
       <p data-i18n="missingInstaller">The installer file is not currently available on the server. Please come back in a moment.</p>
       `}
@@ -866,7 +866,7 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
         });
       }
 
-      // Suppress the install hint when the file is missing — it only makes
+      // Suppress the install hint when the file is missing â€” it only makes
       // sense alongside an actual download.
       if (!INSTALLER_AVAILABLE) {
         var hint = document.querySelector('.install-hint');
@@ -894,3 +894,4 @@ module.exports = {
   INSTALLER_FILE,
   DOWNLOADS_ROOT,
 };
+
