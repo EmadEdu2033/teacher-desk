@@ -1,56 +1,126 @@
-﻿# Teacher Desk
+<div align="center">
 
-Teacher Desk is a desktop productivity workspace for online teachers who need fast access to notes, tasks, reminders, and a private podium that stays out of screen sharing.
+# 📚 Teacher Desk
 
-It is designed for real teaching sessions, not generic note-taking.
+### The Ultimate Desktop Productivity Workspace for Online Educators
 
-## Highlights
+Teacher Desk is a focused Windows desktop workspace built for online teachers, tutors, and remote educators who need a faster, calmer, and more organized way to manage live teaching sessions.
 
-- Sticky notes wall with drag, resize, colors, font size, and auto-save
-- Task manager with priorities, due dates, subtasks, reminders, and categories
-- English and Arabic UI with RTL support
+Built by **FutureTeach**.
+
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078D6)
+![Built with Electron](https://img.shields.io/badge/Built%20with-Electron-47848F)
+![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6)
+![pnpm workspace](https://img.shields.io/badge/pnpm-workspace-F69220)
+
+[Features](#-features) • [Demo](#-see-teacher-desk-in-action) • [Quick Start](#-quick-start) • [Project Structure](#-project-structure) • [Tech Stack](#-tech-stack) • [Contributing](#-contributing)
+
+</div>
+
+---
+
+## ❓ Why Teacher Desk?
+
+Online educators often teach in high-pressure, multitasking environments. Teacher Desk gives them one local, private workspace designed specifically for that reality.
+
+| Challenge teachers face | How Teacher Desk helps |
+| --- | --- |
+| Notes are scattered across apps, papers, and chats | A visual **Sticky Notes Wall** keeps everything in one place |
+| Tasks and follow-ups get forgotten between lessons | A **Smart Task Manager** tracks deadlines, subtasks, and reminders |
+| Teachers need private content hidden from screen sharing | **Podium Mode** protects private workspace content during live sessions |
+| Many tools are cloud-dependent or privacy-invasive | **Local-first storage** keeps data on-device with backup and restore |
+
+---
+
+## 🚀 Features
+
+### 📝 Sticky Notes Wall
+A flexible visual workspace for quick teaching notes and live session planning.
+
+- Drag and resize notes freely
+- Color-code content for fast scanning
+- Adjust note font size per widget
+- Auto-save changes locally
+
+### ✅ Smart Task Manager
+A built-in task system designed for teaching workflows, prep, and follow-up.
+
+- Priorities and due dates
+- Subtasks for lesson prep and admin work
+- Reminder support
+- Category-based organization
+
+### 🎭 Podium Mode
+Keep your private teacher workspace out of student view during live sessions.
+
+- Helps hide content from OBS, Zoom, Teams, and similar capture workflows
+- One-click toggle behavior
+- Designed for real-world screen-sharing scenarios
+
+### 🌐 Multilingual UI
+Built for teachers working in multilingual environments.
+
+- English and Arabic support
+- Full RTL handling for Arabic
+- Practical educator-first interface copy
+
+### 💾 Privacy-First Storage
+Your teaching workspace stays yours.
+
+- SQLite local storage
+- Local backup and restore flows
+- No mandatory cloud dependency
+
+### 🎨 Theming
+A workspace that stays usable for long teaching sessions.
+
 - Light and dark themes
-- Podium mode hidden from screen capture tools
-- Local-first SQLite storage with backup and restore
-- System tray support for Windows
+- Per-widget visual customization
+- Color choices that support categorization and focus
 
-## Repository Structure
+---
 
-This repository is a workspace. The main desktop app lives here:
+## ✨ See Teacher Desk in Action
 
-```text
-teacher-desk/
+<div align="center">
+
+[![Watch the demo video](https://img.shields.io/badge/Watch-Demo%20Video-blue?style=for-the-badge)](https://github.com/user-attachments/assets/00fba191-49d7-412c-b7e5-d614f75403f1)
+
+[Download the full demo video](./demo/teacher-desk-demo.mp4)
+
+</div>
+
+---
+
+## ⚡ Quick Start
+
+### For End Users (Windows)
+
+1. Go to the repository **Releases** page.
+2. Download the latest Windows installer.
+3. Run the installer.
+4. Launch **Teacher Desk** from the Desktop or Start Menu.
+
+### For Developers
+
+#### Prerequisites
+
+- Node.js **22+**
+- pnpm **9+**
+- Windows recommended for the Electron desktop workflow
+
+#### Windows setup
+
+```powershell
+nvm install 22
+nvm use 22
+corepack enable
+corepack prepare pnpm@latest --activate
+pnpm --version
 ```
 
-Useful folders:
-
-- `teacher-desk/` â†’ Electron desktop application
-- `artifacts/teacher-desk-landing/` â†’ landing / distribution artifact
-- `artifacts/teacher-desk-marketing-video/` â†’ marketing video artifact
-- `lib/` â†’ shared packages
-- `scripts/` â†’ workspace utility scripts
-
-## Demo Video
-
-
-
-https://github.com/user-attachments/assets/00fba191-49d7-412c-b7e5-d614f75403f1
-
-
-
-
-Local source used for publishing:
-
-`
-` 
-
-For a more polished presentation later, we can add a thumbnail image that links to this file or move it to a GitHub Release asset.
-
-## Running the Project Locally
-
-### Option 1: Run the desktop app with Electron
-
-From the app folder:
+#### Run locally
 
 ```bash
 cd teacher-desk
@@ -58,40 +128,17 @@ pnpm install
 pnpm start
 ```
 
-### Option 2: Run browser preview
-
-From the workspace root:
+#### Browser preview
 
 ```bash
 PORT=5000 pnpm run preview
 ```
 
-Default preview port:
+---
 
-- `5000`
+## 🛠️ Build Instructions
 
-## Windows Setup Notes
-
-On Windows, this project is easiest to run with:
-
-- `nvm-windows`
-- Node `22`
-- `pnpm` via `corepack`
-
-Recommended setup:
-
-```powershell
-nvm install 22
-nvm use 22
-corepack enable
-corepack prepare pnpm@latest --activate
-```
-
-Then install dependencies.
-
-## Build Instructions
-
-### Build the desktop app
+### Development build
 
 ```bash
 cd teacher-desk
@@ -99,48 +146,119 @@ pnpm install
 pnpm run build:unpacked
 ```
 
-### Build the signed Windows package
+### Signed production build
 
 ```bash
+cd teacher-desk
 WIN_CSC_KEY_PASSWORD=<your-pfx-password> pnpm run build:win
 ```
 
-This flow produces:
+### Skip signing for development
 
-- unpacked Electron app
-- signed executable
-- Windows installer
-- signed installer
+```bash
+cd teacher-desk
+TEACHER_DESK_SKIP_SIGN=1 pnpm run build:win
+```
 
-## End User Installation (Windows)
+### Environment Variables
 
-1. Download `TeacherDeskSetup.exe`
-2. Run the installer
-3. Approve the UAC prompt
-4. Complete setup
-5. Launch Teacher Desk from Desktop or Start Menu
+| Variable | Purpose |
+| --- | --- |
+| `WIN_CSC_KEY_PASSWORD` | Password for the Windows code-signing certificate |
+| `WIN_CSC_LINK` | Optional override path for the `.pfx` certificate |
+| `TEACHER_DESK_SKIP_SIGN` | Skip signing during development builds |
+| `PORT` | Browser preview port, defaults to `5000` |
 
-## Security and Signing
+---
 
-Production builds are designed to support code signing.
+## 🗂️ Project Structure
 
-Important environment variables:
+```text
+teacher-desk/
+├── teacher-desk/
+│   ├── src/
+│   ├── scripts/
+│   ├── main.js
+│   ├── preload.js
+│   ├── renderer/
+│   └── package.json
+├── lib/
+├── artifacts/
+│   ├── teacher-desk-landing/
+│   └── teacher-desk-marketing-video/
+├── demo/
+├── scripts/
+├── package.json
+└── pnpm-workspace.yaml
+```
 
-- `WIN_CSC_KEY_PASSWORD`
-- `WIN_CSC_LINK` (optional)
-- `TEACHER_DESK_SKIP_SIGN=1` for unsigned dev builds
+---
 
-## Recommended Next README Improvements
+## 🧱 Tech Stack
 
-To make this repository look even more professional, the next best additions are:
+| Technology | Purpose |
+| --- | --- |
+| Electron | Windows desktop application shell |
+| TypeScript 5.9 | Type-safe tooling and shared packages |
+| SQLite | Local-first persistent storage |
+| Vite | Fast frontend and artifact workflows |
+| pnpm Workspaces | Monorepo and dependency management |
 
-- App screenshots
-- Feature GIFs
-- A short architecture diagram
-- Known limitations / roadmap
-- Release downloads badge
+---
 
-## License
+## 🛣️ Roadmap
 
-MIT
+### Completed
 
+- [x] Sticky notes workspace
+- [x] Smart task manager with subtasks
+- [x] Local SQLite persistence
+- [x] Backup and restore support
+- [x] Arabic + English multilingual UI
+- [x] Podium mode for screen-share privacy
+
+### Upcoming
+
+- [ ] macOS and Linux support
+- [ ] Plugin system
+- [ ] Voice notes
+- [ ] Student roster tools
+- [ ] Lesson templates
+- [ ] Cloud sync
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes with clear messages
+4. Push your branch to GitHub
+5. Open a Pull Request with context and screenshots where relevant
+
+---
+
+## ⚠️ Known Issues
+
+- Windows-only tray behavior is currently the primary supported desktop experience
+- Screen capture protection can vary depending on the broadcasting or meeting tool
+- High-DPI scaling behavior may vary slightly across devices and display settings
+
+---
+
+## 🆘 Support
+
+- Open a bug report or feature request in [GitHub Issues](https://github.com/EmadEdu2033/teacher-desk/issues)
+- Use [GitHub Discussions](https://github.com/EmadEdu2033/teacher-desk/discussions) for broader ideas and product conversations
+
+---
+
+<div align="center">
+
+**Made with ❤️ for Teachers, by Teachers**
+
+**Built by FutureTeach · Empowering educators worldwide**
+
+[Back to Top](#-teacher-desk)
+
+</div>
