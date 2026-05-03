@@ -1,0 +1,53 @@
+Teacher Desk for Windows
+========================
+
+Thank you for downloading Teacher Desk!
+
+How to install
+--------------
+1. Double-click  TeacherDeskSetup.exe
+2. If Windows shows a SmartScreen warning ("Windows protected your PC"),
+   click  More info  ->  Run anyway.
+   (This is normal for new apps that are not yet code-signed.
+    Teacher Desk only stores data on your own computer.)
+3. Click  Yes  on the Windows User Account Control prompt.
+4. The setup wizard will open. Click  Next, accept the install
+   folder (or pick your own), then click  Install.
+5. When it finishes, click  Finish. Teacher Desk will start
+   and you will get shortcuts on your Desktop and Start Menu.
+
+How to start Teacher Desk every day
+-----------------------------------
+- Double-click the  Teacher Desk  icon on your Desktop, OR
+- Press the Windows key, type  Teacher Desk, and press Enter.
+
+What you get
+------------
+- A wall of sticky notes you can drag, resize, color, and resize fonts on.
+- A task list with priorities, due dates, sub-tasks, and reminders.
+- English and Arabic with right-to-left layout.
+- Light and dark themes.
+- Podium mode: hide Teacher Desk from Zoom / Google Meet / OBS while
+  you can still see it.
+- Backup and restore — your data lives only on this computer.
+
+Where your data is stored
+-------------------------
+   %APPDATA%\Teacher Desk\teacher-desk.db
+
+(Press Win+R, paste the line above, and press Enter to open the folder.)
+You can also open this folder from inside the app:
+   Settings -> Open data folder.
+
+How to uninstall
+----------------
+Windows Settings  ->  Apps  ->  Teacher Desk  ->  Uninstall.
+Your notes and tasks stay in %APPDATA%\Teacher Desk so you can
+reinstall later without losing anything. To remove your data too,
+delete that folder by hand after uninstalling.
+
+Need help?
+----------
+- The app works fully offline; no account, no internet required.
+- If something looks wrong on first launch, close Teacher Desk,
+  then reopen it once. The local database initializes on first run.

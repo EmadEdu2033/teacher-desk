@@ -1,4 +1,4 @@
-# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+﻿# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # compiled output
 dist
@@ -53,12 +53,12 @@ Thumbs.db
 # preview server). The teacher-desk/downloads/ path was a duplicate that
 # accidentally drifted; keep it ignored so a stray cp never recreates the
 # split source of truth.
-/downloads
 teacher-desk/downloads/
 
-# Code-signing certificates — never commit private keys / .pfx files.
+# Code-signing certificates â€” never commit private keys / .pfx files.
 # The .pfx contains the private key; treat it as a secret.
 teacher-desk/build/cert.pfx
 teacher-desk/build/*.pfx
 teacher-desk/build/*.key
 teacher-desk/build/*.pem
+
