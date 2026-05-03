@@ -32,14 +32,16 @@ Useful folders:
 
 ## Demo Video
 
-A recorded demo is included in this repository:
 
-- [Download / watch the demo video](./demo/teacher-desk-demo.mp4)
+
+https://github.com/user-attachments/assets/00fba191-49d7-412c-b7e5-d614f75403f1
+
+
+
 
 Local source used for publishing:
 
-`	ext
-C:\\Users\\Ahmed\\Downloads\\Data-Extractor-May-2-23-30-50.mp4
+`
 ` 
 
 For a more polished presentation later, we can add a thumbnail image that links to this file or move it to a GitHub Release asset.
