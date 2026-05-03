@@ -1,4 +1,4 @@
-# Teacher Desk
+﻿# Teacher Desk
 
 Teacher Desk is a desktop productivity workspace for online teachers who need fast access to notes, tasks, reminders, and a private podium that stays out of screen sharing.
 
@@ -24,37 +24,25 @@ teacher-desk/
 
 Useful folders:
 
-- `teacher-desk/` → Electron desktop application
-- `artifacts/teacher-desk-landing/` → landing / distribution artifact
-- `artifacts/teacher-desk-marketing-video/` → marketing video artifact
-- `lib/` → shared packages
-- `scripts/` → workspace utility scripts
+- `teacher-desk/` â†’ Electron desktop application
+- `artifacts/teacher-desk-landing/` â†’ landing / distribution artifact
+- `artifacts/teacher-desk-marketing-video/` â†’ marketing video artifact
+- `lib/` â†’ shared packages
+- `scripts/` â†’ workspace utility scripts
 
 ## Demo Video
 
-A recorded demo is available locally on the development machine at:
+A recorded demo is included in this repository:
 
-```text
-C:\Users\Ahmed\Downloads\Data-Extractor-May-2-23-30-50.mp4
-```
+- [Download / watch the demo video](./demo/teacher-desk-demo.mp4)
 
-Recommended ways to present it professionally:
+Local source used for publishing:
 
-- Use it as the primary walkthrough when pitching the app
-- Export a short teaser from it for social posts or landing pages
-- Capture 2 to 4 screenshots from the clearest moments and place them in the README later under a `Screenshots` section
+`	ext
+C:\\Users\\Ahmed\\Downloads\\Data-Extractor-May-2-23-30-50.mp4
+` 
 
-If you want this video showcased directly from the repository, the clean approach is:
-
-1. Upload the MP4 to a release asset, cloud storage, or YouTube as unlisted
-2. Add a thumbnail image to the repo
-3. Link the thumbnail in this README
-
-Example:
-
-```md
-[![Watch the demo](./docs/assets/teacher-desk-demo-thumb.png)](https://your-video-link)
-```
+For a more polished presentation later, we can add a thumbnail image that links to this file or move it to a GitHub Release asset.
 
 ## Running the Project Locally
 
@@ -153,3 +141,4 @@ To make this repository look even more professional, the next best additions are
 ## License
 
 MIT
+
