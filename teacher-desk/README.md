@@ -1,191 +1,155 @@
 # Teacher Desk
 
-Offline desktop productivity app for online teachers.
+Teacher Desk is a desktop productivity workspace for online teachers who need fast access to notes, tasks, reminders, and a private podium that stays out of screen sharing.
 
-- Sticky notes wall (drag, resize, color picker, font size, auto-save) — full mouse + touch support
-- Task manager with priorities, due dates, sub-tasks, **category filter**, in-app reminders
-- Bilingual EN / AR with full RTL
-- Light / Dark themes
-- Podium mode — hidden from screen capture (Zoom, Google Meet, OBS)
-- Local-only SQLite, backup / restore, system tray
+It is designed for real teaching sessions, not generic note-taking.
 
-## For end users (Windows)
+## Highlights
 
-1. Download **`TeacherDeskSetup.exe`**.
-2. Double-click it. Windows' User Account Control prompt will appear showing
-   **Verified publisher: Teacher Desk** (in blue, not the orange "Unknown
-   publisher" warning). Click *Yes* to continue.
-3. The setup wizard appears — choose where to install (or accept the default), then click **Install**.
-4. When it finishes, click **Finish**. Teacher Desk starts and a shortcut is created on the Desktop and Start Menu.
-5. To uninstall later: Windows *Settings → Apps → Teacher Desk → Uninstall*.
+- Sticky notes wall with drag, resize, colors, font size, and auto-save
+- Task manager with priorities, due dates, subtasks, reminders, and categories
+- English and Arabic UI with RTL support
+- Light and dark themes
+- Podium mode hidden from screen capture tools
+- Local-first SQLite storage with backup and restore
+- System tray support for Windows
 
-No Python, no Node, no manual extraction — a real Windows installer.
+## Repository Structure
 
-### How do I know this is safe?
+This repository is a workspace. The main desktop app lives here:
 
-`TeacherDeskSetup.exe` (and the `Teacher Desk.exe` it installs) are digitally
-signed with a code-signing certificate issued to **Teacher Desk**. You can
-verify the signature yourself before running it:
-
-1. Right-click **`TeacherDeskSetup.exe`** → **Properties**.
-2. Open the **Digital Signatures** tab. You should see one entry, *Teacher
-   Desk*, with a timestamp.
-3. Select that row → **Details**. The dialog should report
-   *"This digital signature is OK"* and list the issuing certificate authority.
-4. Click **View Certificate** to see the full certificate chain up to a
-   trusted root CA.
-
-If the *Digital Signatures* tab is missing, or the signature shows as invalid,
-**do not run the installer** — the file has been tampered with or is a
-counterfeit. Re-download it from the official source.
-
-## Run locally (developer)
-
-```
-npm install
-npm start
+```text
+teacher-desk/
 ```
 
-## Build the Windows installer
+Useful folders:
 
-```
-WIN_CSC_KEY_PASSWORD=<your-pfx-password> npm run build:win
-```
+- `teacher-desk/` → Electron desktop application
+- `artifacts/teacher-desk-landing/` → landing / distribution artifact
+- `artifacts/teacher-desk-marketing-video/` → marketing video artifact
+- `lib/` → shared packages
+- `scripts/` → workspace utility scripts
 
-This runs four steps:
+## Demo Video
 
-1. `npm run build:unpacked` → `electron-builder` produces `dist/win-unpacked/` (the unpacked Electron app).
-2. `npm run sign:exe` → code-signs `dist/win-unpacked/Teacher Desk.exe`.
-3. `npm run build:installer` → native `makensis` packages the (now-signed) app into `dist/TeacherDeskSetup.exe` using `build/installer.nsi` (an MUI2 wizard with a directory page, Start Menu + Desktop shortcuts, an uninstaller, and Add/Remove Programs registration).
-4. `npm run sign:installer` → code-signs `dist/TeacherDeskSetup.exe`.
+A recorded demo is available locally on the development machine at:
 
-Requires `makensis` and `osslsigncode` on `PATH`:
-- Linux: install the `nsis` and `osslsigncode` packages (e.g. `apt install nsis osslsigncode`, or `pkgs.nsis` + `pkgs.osslsigncode` on Nix — both already in `replit.nix`).
-- Windows: install NSIS from https://nsis.sourceforge.io/. (You can also sign with `signtool.exe` from the Windows SDK on Windows.)
-
-> **Why we shell out to `makensis` directly:** `electron-builder`'s built-in NSIS target invokes `rcedit.exe` through Wine to embed the icon and version metadata into the installer stub. Wine crashes with "Bad system call" inside the Replit Linux sandbox, so we skip electron-builder's NSIS step entirely and call `makensis` ourselves with a hand-written `installer.nsi`. The end result is the same `TeacherDeskSetup.exe` an electron-builder NSIS run would produce, just without the icon-embed step.
-
-> **Important — signed installers must keep `CRCCheck off`:** `build/installer.nsi` sets `CRCCheck off` on purpose. The signing step (`npm run sign:installer`) appends a PE certificate table to the end of the `.exe`, which shifts the bytes NSIS expects to find its embedded CRC32 in. With the default `CRCCheck on`, every signed build aborts on launch with **"NSIS Error: Installer integrity check has failed"** before the wizard appears. The Authenticode signature itself is a much stronger integrity guarantee than CRC32 (Windows verifies it before showing the UAC prompt), so this is safe — and it's the same workaround the NSIS Wiki and electron-builder docs recommend for signed builds. Do not remove that line.
-
-## Cut a new release
-
-```
-WIN_CSC_KEY_PASSWORD=<your-pfx-password> npm run release -- patch
-# or: minor, major, or an explicit version like 1.4.0
+```text
+C:\Users\Ahmed\Downloads\Data-Extractor-May-2-23-30-50.mp4
 ```
 
-`npm run release` is a one-shot wrapper around the steps above. It will:
+Recommended ways to present it professionally:
 
-1. Bump the `version` field in `teacher-desk/package.json` (`patch`, `minor`, `major`, or an explicit `X.Y.Z`).
-2. Read commits in `teacher-desk/` since the previous `v*` tag and prepend a new dated section to `CHANGELOG.md`, grouped by commit type (see [Commit message convention](#commit-message-convention) below).
-3. Run `npm run build:win`, which bakes the new version into `TeacherDeskSetup.exe` (right-click → *Properties → Details → File version* will match `package.json`) and signs both binaries.
-4. Commit the version bump + changelog and create an annotated git tag like `v1.0.1`. Push with `git push && git push --tags`.
+- Use it as the primary walkthrough when pitching the app
+- Export a short teaser from it for social posts or landing pages
+- Capture 2 to 4 screenshots from the clearest moments and place them in the README later under a `Screenshots` section
 
-Useful flags:
+If you want this video showcased directly from the repository, the clean approach is:
 
-- `--dry-run` — print what would happen, change nothing.
-- `--no-build` — skip the Windows build (handy on machines without `makensis` / `osslsigncode`).
-- `--no-git` — bump and write the changelog but don't commit or tag.
-- `--yes` / `-y` — skip the interactive confirmation prompt.
+1. Upload the MP4 to a release asset, cloud storage, or YouTube as unlisted
+2. Add a thumbnail image to the repo
+3. Link the thumbnail in this README
 
-If the build is **not** skipped, either `WIN_CSC_KEY_PASSWORD` must be set or `TEACHER_DESK_SKIP_SIGN=1` must be exported (for unsigned dev builds).
+Example:
 
-### Commit message convention
-
-`scripts/release.js` groups bullets in `CHANGELOG.md` by commit type, using the
-[Conventional Commits](https://www.conventionalcommits.org/) prefix on each
-commit's subject line. Use one of these prefixes when committing changes inside
-`teacher-desk/`:
-
-| Prefix                                                          | Changelog section |
-| --------------------------------------------------------------- | ----------------- |
-| `feat:` / `feature:`                                            | **Added**         |
-| `fix:` / `bugfix:`                                              | **Fixed**         |
-| `chore:`, `refactor:`, `perf:`, `style:`, `docs:`, `test:`, `build:`, `ci:`, `revert:` | **Changed** |
-| (anything else, or no prefix)                                   | **Other**         |
-
-A scope is optional and is preserved in the rendered bullet, e.g.
-`feat(notes): add color picker` → `**notes:** add color picker` under **Added**.
-Append `!` after the type/scope (e.g. `feat!:` or `refactor(api)!:`) to mark a
-breaking change — the bullet will be prefixed with **BREAKING:**.
-
-Examples:
-
-```
-feat: add reminders to the task manager
-fix(notes): stop sticky notes from drifting after window resize
-chore: bump electron to 30.x
-docs: clarify code-signing instructions
+```md
+[![Watch the demo](./docs/assets/teacher-desk-demo-thumb.png)](https://your-video-link)
 ```
 
-Commits without a recognized prefix still show up — they just land in the
-**Other** bucket. Existing flat entries in `CHANGELOG.md` are left untouched;
-only new release sections use the grouped format.
+## Running the Project Locally
 
-Each rendered bullet ends with the short commit hash in parentheses, e.g.
-`- add reminders (a1b2c3d)`, so individual changes stay traceable back to git
-without making the changelog read like raw `git log` output. Once the project
-repo is public, `renderChangelogEntry` in `scripts/release.js` is the single
-spot to swap the literal hash for a Markdown link to the commit URL.
+### Option 1: Run the desktop app with Electron
 
-The bullet-formatting rules are covered by `scripts/release.test.js`. Run it
-with `node scripts/release.test.js` (or `npm test` from `teacher-desk/`) after
-touching `scripts/release.js`.
+From the app folder:
 
-## Code-signing (removes the Windows SmartScreen "Unknown publisher" warning)
-
-Both `Teacher Desk.exe` and `TeacherDeskSetup.exe` are signed during `build:win`
-using `osslsigncode` (a cross-platform Authenticode signer that works on Linux
-without requiring `signtool.exe` or Wine).
-
-**Configuration** lives in `package.json` → `build.win`:
-
-| Field                 | Purpose                                                         |
-| --------------------- | --------------------------------------------------------------- |
-| `certificateFile`     | Path to the `.pfx` (PKCS#12) cert file. Default: `build/cert.pfx`. |
-| `certificatePassword` | Documents the env var name (`WIN_CSC_KEY_PASSWORD`) — never store the actual password here. |
-| `publisherName`       | Subject name shown in Windows' UAC / SmartScreen dialog.        |
-
-**Required env var:**
-- `WIN_CSC_KEY_PASSWORD` — password protecting your `.pfx` file.
-
-**Optional env var:**
-- `WIN_CSC_LINK` — overrides `certificateFile` (e.g. point at a CI secret path).
-- `TEACHER_DESK_SKIP_SIGN=1` — let the build succeed even when no cert is present (handy for unsigned dev builds).
-
-### Production: a real CA-issued certificate
-
-To actually remove the SmartScreen warning for end users, you need a code-signing
-certificate from a public CA (DigiCert, Sectigo, SSL.com, etc.):
-
-- **OV (Organization Validation)** — cheaper, but new certs build "reputation"
-  over downloads before SmartScreen stops warning users.
-- **EV (Extended Validation)** — more expensive and requires a hardware token,
-  but removes the SmartScreen warning **immediately** on the first download.
-
-Once you have the `.pfx`, drop it at `teacher-desk/build/cert.pfx` (or set
-`WIN_CSC_LINK`), set `WIN_CSC_KEY_PASSWORD`, and run `npm run build:win`. The
-`.pfx` is gitignored so the private key never gets committed.
-
-### Local / dev: self-signed certificate
-
-For verifying the signing pipeline locally (does **not** remove SmartScreen,
-because the cert isn't trusted by Windows):
-
-```
-npm run cert:dev                     # writes build/cert.pfx (password: teacherdesk)
-WIN_CSC_KEY_PASSWORD=teacherdesk npm run build:win
+```bash
+cd teacher-desk
+pnpm install
+pnpm start
 ```
 
-After signing, the embedded signature can be inspected on Windows via
-right-click → **Properties → Digital Signatures**, or on Linux with
-`osslsigncode verify -in dist/TeacherDeskSetup.exe`.
+### Option 2: Run browser preview
 
-See https://www.electron.build/code-signing for additional CA recommendations.
+From the workspace root:
 
-## Browser preview (no Electron)
-
+```bash
+PORT=5000 pnpm run preview
 ```
-PORT=5000 npm run preview
+
+Default preview port:
+
+- `5000`
+
+## Windows Setup Notes
+
+On Windows, this project is easiest to run with:
+
+- `nvm-windows`
+- Node `22`
+- `pnpm` via `corepack`
+
+Recommended setup:
+
+```powershell
+nvm install 22
+nvm use 22
+corepack enable
+corepack prepare pnpm@latest --activate
 ```
-Storage falls back to `localStorage`; SQLite & native dialogs are stubbed out.
+
+Then install dependencies.
+
+## Build Instructions
+
+### Build the desktop app
+
+```bash
+cd teacher-desk
+pnpm install
+pnpm run build:unpacked
+```
+
+### Build the signed Windows package
+
+```bash
+WIN_CSC_KEY_PASSWORD=<your-pfx-password> pnpm run build:win
+```
+
+This flow produces:
+
+- unpacked Electron app
+- signed executable
+- Windows installer
+- signed installer
+
+## End User Installation (Windows)
+
+1. Download `TeacherDeskSetup.exe`
+2. Run the installer
+3. Approve the UAC prompt
+4. Complete setup
+5. Launch Teacher Desk from Desktop or Start Menu
+
+## Security and Signing
+
+Production builds are designed to support code signing.
+
+Important environment variables:
+
+- `WIN_CSC_KEY_PASSWORD`
+- `WIN_CSC_LINK` (optional)
+- `TEACHER_DESK_SKIP_SIGN=1` for unsigned dev builds
+
+## Recommended Next README Improvements
+
+To make this repository look even more professional, the next best additions are:
+
+- App screenshots
+- Feature GIFs
+- A short architecture diagram
+- Known limitations / roadmap
+- Release downloads badge
+
+## License
+
+MIT
