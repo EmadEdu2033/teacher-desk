@@ -230,10 +230,13 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Teacher Desk app preview" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://teacherdesk.coachemad.me/" />
   <meta name="twitter:title" content="Teacher Desk" />
   <meta name="twitter:description" content="Sticky notes, tasks, and Podium mode for online educators." />
   <meta name="twitter:image" content="https://teacherdesk.coachemad.me${escapeHtml(u.ogImageUrl)}" />
+  <meta name="twitter:image:alt" content="Teacher Desk app preview" />
   <link rel="icon" type="image/svg+xml" href="${escapeHtml(u.iconUrl)}" />
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src 'self';" />
