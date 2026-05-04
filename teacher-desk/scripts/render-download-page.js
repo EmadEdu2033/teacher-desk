@@ -86,7 +86,7 @@ const DEFAULT_URLS = {
   iconUrl:   '/assets/icon.svg',
   coachUrl:  '/assets/coach-emad.jpg',
   fontUrl:   '/fonts/alexandria-arabic.woff2',
-  ogImageUrl: '/assets/icon.svg',
+  ogImageUrl: '/assets/og-image.png',
   installerUrl: '/download/TeacherDeskSetup.exe',
   videoUrl:  '/teacher-desk-marketing-video/',
   iframeLoading: 'eager',
