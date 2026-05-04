@@ -86,6 +86,7 @@ const DEFAULT_URLS = {
   iconUrl:   '/assets/icon.svg',
   coachUrl:  '/assets/coach-emad.jpg',
   fontUrl:   '/fonts/alexandria-arabic.woff2',
+  ogImageUrl: '/assets/icon.svg',
   installerUrl: '/download/TeacherDeskSetup.exe',
   videoUrl:  '/teacher-desk-marketing-video/',
   iframeLoading: 'eager',
@@ -218,6 +219,17 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>${escapeHtml(i18n.en.docTitle)}</title>
+  <meta name="description" content="Teacher Desk, a clean Windows desktop app for online educators with sticky notes, tasks, and podium mode." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Teacher Desk" />
+  <meta property="og:title" content="Teacher Desk" />
+  <meta property="og:description" content="Sticky notes, tasks, and Podium mode for online educators." />
+  <meta property="og:url" content="https://teacherdesk.coachemad.me/" />
+  <meta property="og:image" content="https://teacherdesk.coachemad.me${escapeHtml(u.ogImageUrl)}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Teacher Desk" />
+  <meta name="twitter:description" content="Sticky notes, tasks, and Podium mode for online educators." />
+  <meta name="twitter:image" content="https://teacherdesk.coachemad.me${escapeHtml(u.ogImageUrl)}" />
   <link rel="icon" type="image/svg+xml" href="${escapeHtml(u.iconUrl)}" />
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src 'self';" />
