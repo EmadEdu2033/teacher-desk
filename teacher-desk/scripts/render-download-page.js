@@ -86,7 +86,7 @@ const DEFAULT_URLS = {
   iconUrl:   '/assets/icon.svg',
   coachUrl:  '/assets/coach-emad.jpg',
   fontUrl:   '/fonts/alexandria-arabic.woff2',
-  ogImageUrl: '/assets/og-image.png',
+  ogImageUrl: '/assets/og-image.jpg',
   installerUrl: '/download/TeacherDeskSetup.exe',
   videoUrl:  '/teacher-desk-marketing-video/',
   iframeLoading: 'eager',
@@ -226,6 +226,10 @@ function renderDownloadPage(urls = DEFAULT_URLS) {
   <meta property="og:description" content="Sticky notes, tasks, and Podium mode for online educators." />
   <meta property="og:url" content="https://teacherdesk.coachemad.me/" />
   <meta property="og:image" content="https://teacherdesk.coachemad.me${escapeHtml(u.ogImageUrl)}" />
+  <meta property="og:image:secure_url" content="https://teacherdesk.coachemad.me${escapeHtml(u.ogImageUrl)}" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Teacher Desk" />
   <meta name="twitter:description" content="Sticky notes, tasks, and Podium mode for online educators." />
